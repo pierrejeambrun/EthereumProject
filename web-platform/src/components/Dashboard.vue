@@ -74,14 +74,14 @@ export default {
   computed: {
   },
   methods: {
-    launch (url) {
+    launch(url) {
       openURL(url)
     }
   },
-  mounted () {
+  mounted() {
     this.$refs.layout.toggleLeft();
   },
-  beforeDestroy () {
+  beforeDestroy() {
   }
 }
 </script>
