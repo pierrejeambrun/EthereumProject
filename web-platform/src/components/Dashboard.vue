@@ -51,12 +51,17 @@
       if using subRoutes
     -->
     <div class="layout-padding welcome-message-container non-selectable no-pointer-events">
-      <div class="message" :style="position">
-        <span>Welcome to our Ethereum Project</span>
-      </div>
+      <router-view/>
     </div>
-
-    <router-view/>
+  <q-toolbar slot="footer">
+    <q-toolbar-title>
+      <div class="row justify-between">
+        <div>Supelec</div>
+        <div>2017/2018</div>
+        <!-- <div class="col-9">col</div> -->
+      </div>
+    </q-toolbar-title>
+  </q-toolbar>
   </q-layout>
 </template>
 
@@ -76,7 +81,7 @@ import {
 } from 'quasar'
 
 export default {
-  name: 'index',
+  name: 'dashboard',
   components: {
     QLayout,
     QToolbar,
@@ -91,8 +96,6 @@ export default {
   },
   data () {
     return {
-      orienting: window.DeviceOrientationEvent && !this.$q.platform.is.desktop,
-      rotating: window.DeviceMotionEvent && !this.$q.platform.is.desktop,
       moveX: 0,
       moveY: 0,
       rotateY: 0,
@@ -123,17 +126,3 @@ export default {
   }
 }
 </script>
-
-<style lang="stylus">
-.welcome-message-container
-  width 500px
-  height 242px
-  position absolute
-  top 50%
-  left 50%
-  transform translateX(-50%) translateY(-50%)
-  font-size 2em
-.message
-  position absolute
-  transform-style preserve-3d
-</style>
