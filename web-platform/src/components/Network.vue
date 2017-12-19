@@ -9,6 +9,8 @@
 
 <script type="text/javascript">
   import * as d3 from "d3";
+  import { Node } from "structures/Nodes"
+
 
   var mockGraph = {};
 
