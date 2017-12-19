@@ -13,14 +13,16 @@
 
     <div slot="left">
       <q-list-header>Menu</q-list-header>
-      <q-side-link item to="/" exact>
-        <q-item-side icon="home" />
-        <q-item-main label="Home" sublabel="Go Back to the Home Page" />
-      </q-side-link>
-      <q-side-link item to="/network">
-        <q-item-side icon="dns" />
-        <q-item-main label="Network" sublabel="Visualize Architecture" />
-      </q-side-link>
+      <div @click="$refs.layout.hideLeft()">
+        <q-side-link item to="/" exact>
+          <q-item-side icon="home" />
+          <q-item-main label="Home" sublabel="Go Back to the Home Page" />
+        </q-side-link>
+        <q-side-link item to="/network">
+          <q-item-side icon="dns" />
+          <q-item-main label="Network" sublabel="Visualize Architecture" />
+        </q-side-link>
+      </div>
     </div>
 
   <router-view/>
