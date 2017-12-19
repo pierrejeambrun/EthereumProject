@@ -1,23 +1,24 @@
 <template>
-  <span>Welcome to our Ethereum Project</span>
+  <div class="welcome-message-container row justify-center">
+    <div class="message">Welcome to our Ethereum Project</div>
+  </div>
 </template>
 
 <script type="text/javascript">
+
+  var mockGraph = {};
+
   export default {
-    name: 'presentation'
+    name: 'presentation',
   }
+
 </script>
 
 <style lang="stylus">
 .welcome-message-container
-  width 500px
-  height 242px
-  position absolute
-  top 50%
-  left 50%
-  transform translateX(-50%) translateY(-50%)
-  font-size 2em
+  width 100%
+  height 100%
+
 .message
-  position absolute
-  transform-style preserve-3d
+  font-size 2em
 </style>

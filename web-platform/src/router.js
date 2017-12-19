@@ -15,9 +15,9 @@ export default new VueRouter({
   routes: [
     {
       path: '/', component: load('Dashboard'),
-      children: [{
-          path: '',
-          component: load('Presentation')}
+      children: [
+        { path: '', component: load('Presentation') },
+        { path: 'network', component: load('Network') }
       ]
     },
     { path: '*', component: load('Error404') }
