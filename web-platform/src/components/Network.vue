@@ -4,28 +4,78 @@
     <div style="width: 100%"/>
     <svg class="svg" id="svg1" width="100%" height="500">
     </svg>
+    <q-modal ref="layoutModal" v-model="open" minimized>
+      <q-toolbar>
+        <q-btn flat @click="open = false ;$refs.layoutModal.close()">
+          <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+        <div class="q-toolbar-title">
+          Information on Node {{ selectedNode ? selectedNode.id : ""}}
+        </div>
+      </q-toolbar>
+      <q-toolbar slot="footer">
+        <div class="q-toolbar-title">
+          Footer
+        </div>
+      </q-toolbar>
+      <div class="layout-padding">
+        <h3>Information</h3>
+        <q-list separator>
+          <q-collapsible icon="home" label="Address" :sublabel="selectedNode ? selectedNode.ip : 'x.x.x.x'">
+            <div>
+              Content
+            </div>
+          </q-collapsible>
+          <q-collapsible icon="perm_identity" label="Miner Id">
+            <div>
+              Content
+            </div>
+          </q-collapsible>
+          <q-collapsible icon="shopping_cart" label="Miner Accounts">
+            <div>
+              Content
+            </div>
+          </q-collapsible>
+        </q-list>
+        <div class="row justify-between">
+          <q-btn color="primary" @click="open = false; goToBlockChain(selectedNode.id)">Blochain</q-btn>
+          <q-btn color="primary" @click="open = false;$refs.layoutModal.close()">Close</q-btn>
+        </div>
+      </div>
+    </q-modal>
   </div>
 </template>
 
 <script type="text/javascript">
-  import * as d3 from "d3";
+  import * as d3 from "d3"
   import { Node } from "structures/Nodes"
-  import graph from "../assets/data/mock/mockGraph.json"
+  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
 
-  var mockGraph = require("../assets/data/mock/mockGraph.json");
+  var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
 
   export default {
     name: "network",
+    components: {
+      QModal,
+      QBtn,
+      QToolbar,
+      QIcon,
+      QToolbarTitle,
+      QList,
+      QCollapsible
+    },
     data: function() {
       return {
         graphData: null,
-        simulatoin: null        
+        simulatoin: null,
+        open: false,
+        selectedNode: null
       }
     },
     mounted: function() {
       // Retrieve data for the graph,
       this.graphData = mockGraph;
-      console.log("Data retrieved");
+
       var svg = d3.select("#svg1");
       var width = parseInt(svg.style("width"));
       var height = parseInt(svg.style("height"));
@@ -33,47 +83,53 @@
       var color = d3.scaleOrdinal(d3.schemeCategory20);
       var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width/2, height/2));
+        .force("link", d3.forceLink().distance(function(d) { return height/2;}).strength(1))
+        .force("charge", d3.forceManyBody().strength(-2500))
+        .force("center", d3.forceCenter(width/2, height/2))
 
       this.simulation = simulation;
 
       var link = svg.append("g")
         .attr("class", "links")
         .selectAll(".links")
-        .data(mockGraph.links)
+        .data(this.graphData.links)
         .enter().append("line")
-        .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+        // .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+        .attr("stroke-width", 2);
 
       var node = svg.append("g")
         .attr("class", "nodes")
         .selectAll(".node")
-        .data(mockGraph.nodes)
+        .data(this.graphData.nodes)
         .enter().append("circle")
-          .attr("r", 5)
+          .attr("r", 12)
           .attr("fill", function(d) { return color(d.group); })
         .call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended))
-        .on("click", function() { console.log("Node clicked"); });
+        .on("click", d => {
+          this.selectedNode = this.graphData.nodes[d.index];
+          console.log(this.selectedNode);
+          this.$refs.layoutModal.open();
+        });
       
       var label = svg.selectAll(".myText")
-        .data(mockGraph.nodes)
+        .data(this.graphData.nodes)
         .enter()
         .append("text")
-        .text(function(d) { return d.group ;})
+        .text(function(d) { return d.ip ;})
         .style("text-anchor", "middle")
         .style("fill", "#555")
         .style("font-family", "Arial")
         .style("font-size", 12);
 
       simulation
-        .nodes(mockGraph.nodes)
+        .nodes(this.graphData.nodes)
         .on("tick", ticked);
 
       simulation.force("link")
-        .links(mockGraph.links);
+        .links(this.graphData.links);
 
       function ticked() {
         link
@@ -122,6 +178,9 @@
         if (this.simulation) {
           this.simulation.force("center", d3.forceCenter(width/2, height/2));
         }
+      },
+      goToBlockChain: function(nodeId) {
+        console.log("Navigate To the Blockchain visualizer!");
       }
     } 
   }
@@ -145,9 +204,5 @@
 
 .nodes circle
   stroke: #fff;
-  stroke-width: 1.5px;
-
-.node text
-  pointer-events none
-  font: 10px sans-serif
+  stroke-width: 0.5px;
 </style>
