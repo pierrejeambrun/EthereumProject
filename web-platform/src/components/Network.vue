@@ -18,7 +18,8 @@
     name: "network",
     data: function() {
       return {
-        graphData: null
+        graphData: null,
+        simulatoin: null        
       }
     },
     mounted: function() {
@@ -35,6 +36,8 @@
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width/2, height/2));
 
+      this.simulation = simulation;
+
       var link = svg.append("g")
         .attr("class", "links")
         .selectAll(".links")
@@ -49,12 +52,22 @@
         .enter().append("circle")
           .attr("r", 5)
           .attr("fill", function(d) { return color(d.group); })
-          .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended))
-          .on("click", function() { console.log("Node clicked"); });
-        
+        .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended))
+        .on("click", function() { console.log("Node clicked"); });
+      
+      var label = svg.selectAll(".myText")
+        .data(mockGraph.nodes)
+        .enter()
+        .append("text")
+        .text(function(d) { return d.group ;})
+        .style("text-anchor", "middle")
+        .style("fill", "#555")
+        .style("font-family", "Arial")
+        .style("font-size", 12);
+
       simulation
         .nodes(mockGraph.nodes)
         .on("tick", ticked);
@@ -72,6 +85,10 @@
         node
             .attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
+
+        label
+            .attr("x", function(d){ return d.x; })
+            .attr("y", function (d) {return d.y - 10; });
       }
 
       function dragstarted(d) {
@@ -90,10 +107,22 @@
         d.fx = null;
         d.fy = null;
       }
+      window.addEventListener('resize', this.handleResize);
+    },
+    delete: function() {
+      window.removeEventListener('resize', this.handleResize);
     },
     computed: {
     },
     methods: {
+      handleResize: function(event) {
+        var svg = d3.select("#svg1");
+        var width = parseInt(svg.style("width"));
+        var height = parseInt(svg.style("height"));
+        if (this.simulation) {
+          this.simulation.force("center", d3.forceCenter(width/2, height/2));
+        }
+      }
     } 
   }
 </script>
