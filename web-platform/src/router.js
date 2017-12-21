@@ -17,7 +17,8 @@ export default new VueRouter({
       path: '/', component: load('Dashboard'),
       children: [
         { path: '', component: load('Presentation') },
-        { path: 'network', component: load('Network') }
+        { path: 'network', component: load('Network') },
+        { path: 'blockchain', component: load('blockchain-components/MainBlockchain') }
       ]
     },
     { path: '*', component: load('Error404') }

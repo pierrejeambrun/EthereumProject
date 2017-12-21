@@ -50,6 +50,8 @@
   import * as d3 from "d3"
   import { Node } from "structures/Nodes"
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
+  import { mapState } from 'vuex'
+
 
   var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
 
@@ -66,8 +68,7 @@
     },
     data: function() {
       return {
-        graphData: null,
-        simulatoin: null,
+        simulation: null,
         open: false,
         selectedNode: null
       }
@@ -110,7 +111,6 @@
         .on("end", dragended))
         .on("click", d => {
           this.selectedNode = this.graphData.nodes[d.index];
-          console.log(this.selectedNode);
           this.$refs.layoutModal.open();
         });
       
@@ -169,6 +169,14 @@
       window.removeEventListener('resize', this.handleResize);
     },
     computed: {
+      graphData: {
+        get: function() {
+          return this.$store.state.graphData;
+        },
+        set: function(newGraph) {
+          this.$store.commit("setGraph", newGraph);
+        }
+      }
     },
     methods: {
       handleResize: function(event) {
@@ -180,7 +188,7 @@
         }
       },
       goToBlockChain: function(nodeId) {
-        console.log("Navigate To the Blockchain visualizer!");
+        this.$router.push({ path: "/blockchain"});
       }
     } 
   }
