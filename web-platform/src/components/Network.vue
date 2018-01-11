@@ -50,7 +50,6 @@
   import * as d3 from "d3"
   import { Node } from "structures/Nodes"
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
-  import { mapState } from 'vuex'
 
 
   var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
@@ -188,6 +187,7 @@
         }
       },
       goToBlockChain: function(nodeId) {
+        this.$store.commit("setSelectedNodeId", nodeId);
         this.$router.push({ path: "/blockchain"});
       }
     } 
