@@ -37,6 +37,7 @@
             </div>
           </q-collapsible>
         </q-list>
+        <br>
         <div class="row justify-between">
           <q-btn color="primary" @click="open = false; goToBlockChain(selectedNode.id)">Blochain</q-btn>
           <q-btn color="primary" @click="open = false;$refs.layoutModal.close()">Close</q-btn>
