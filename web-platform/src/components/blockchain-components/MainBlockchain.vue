@@ -13,6 +13,7 @@ export default {
     }
   },
   mounted: function() {
+    this.$http.get('https://httpbin.org/get').then(response => {console.log(response.data)});
   },
 } 
 </script>
