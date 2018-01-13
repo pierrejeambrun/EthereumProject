@@ -24,16 +24,15 @@
         </q-side-link>
       </div>
     </div>
-
-  <router-view/>
-  <q-toolbar slot="footer">
-    <q-toolbar-title>
-      <div class="row justify-between">
-        <div>Supelec</div>
-        <div>2017/2018</div>
-      </div>
-    </q-toolbar-title>
-  </q-toolbar>
+    <router-view/>
+    <q-toolbar slot="footer">
+      <q-toolbar-title>
+        <div class="row justify-between">
+          <div>Supelec</div>
+          <div>2017/2018</div>
+        </div>
+      </q-toolbar-title>
+    </q-toolbar>
   </q-layout>
 </template>
 

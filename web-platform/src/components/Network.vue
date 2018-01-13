@@ -201,11 +201,12 @@
   height 100%
 
 .message
-  font-size 2em
+  font-size 2.5em
 
 .svg
-  width 90%
+  width 70%
   border 1px solid lightgrey
+  background-color lightgrey
 
 .links line
   stroke: #999;

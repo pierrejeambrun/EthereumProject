@@ -20,5 +20,5 @@
   height 100%
 
 .message
-  font-size 2em
+  font-size 2.5em
 </style>
