@@ -2,7 +2,7 @@
   <div class="container row justify-center">
     <div class="message">Network Visualization Page</div>
     <div style="width: 100%"/>
-    <svg class="svg" id="svg1" width="100%" height="500">
+    <svg class="svg" id="svg1" width="100%" height="600">
     </svg>
     <q-modal ref="layoutModal" v-model="open" minimized>
       <q-toolbar>
@@ -76,7 +76,6 @@
     mounted: function() {
       // Retrieve data for the graph,
       this.graphData = mockGraph;
-
       var svg = d3.select("#svg1");
       var width = parseInt(svg.style("width"));
       var height = parseInt(svg.style("height"));
@@ -86,7 +85,7 @@
         .force("link", d3.forceLink().id(function(d) { return d.id; }))
         .force("link", d3.forceLink().distance(function(d) { return height/2;}).strength(1))
         .force("charge", d3.forceManyBody().strength(-2500))
-        .force("center", d3.forceCenter(width/2, height/2))
+        .force("center", d3.forceCenter(width/2, height/2));
 
       this.simulation = simulation;
 
@@ -120,9 +119,9 @@
         .append("text")
         .text(function(d) { return d.ip ;})
         .style("text-anchor", "middle")
-        .style("fill", "#555")
+        .style("fill", "#000000")
         .style("font-family", "Arial")
-        .style("font-size", 12);
+        .style("font-size", 13);
 
       simulation
         .nodes(this.graphData.nodes)
@@ -143,8 +142,8 @@
             .attr("cy", function(d) { return d.y; });
 
         label
-            .attr("x", function(d){ return d.x; })
-            .attr("y", function (d) {return d.y - 10; });
+            .attr("x", function(d) { return d.x; })
+            .attr("y", function (d) { return d.y - 10; });
       }
 
       function dragstarted(d) {
@@ -205,14 +204,16 @@
 
 .svg
   width 70%
-  border 1px solid lightgrey
-  background-color lightgrey
+  border 1px solid black
+  background-color #737CA1
+  opacity 0.8
 
 .links line
   stroke: #999;
-  stroke-opacity: 0.6;
+  stroke-opacity: 1;
 
 .nodes circle
   stroke: #fff;
   stroke-width: 0.5px;
+  opacity: 1;
 </style>
