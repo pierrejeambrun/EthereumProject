@@ -74,98 +74,7 @@
       }
     },
     mounted: function() {
-      // Retrieve data for the graph,
-      this.graphData = mockGraph;
-      var svg = d3.select("#svg1");
-      var width = parseInt(svg.style("width"));
-      var height = parseInt(svg.style("height"));
-
-      var color = d3.scaleOrdinal(d3.schemeCategory20);
-      var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function(d) { return d.id; }))
-        .force("link", d3.forceLink().distance(function(d) { return height/2;}).strength(1))
-        .force("charge", d3.forceManyBody().strength(-2500))
-        .force("center", d3.forceCenter(width/2, height/2));
-
-      this.simulation = simulation;
-
-      var link = svg.append("g")
-        .attr("class", "links")
-        .selectAll(".links")
-        .data(this.graphData.links)
-        .enter().append("line")
-        // .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
-        .attr("stroke-width", 2);
-
-      var node = svg.append("g")
-        .attr("class", "nodes")
-        .selectAll(".node")
-        .data(this.graphData.nodes)
-        .enter().append("circle")
-          .attr("r", 12)
-          .attr("fill", function(d) { return color(d.group); })
-        .call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended))
-        .on("click", d => {
-          this.selectedNode = this.graphData.nodes[d.index];
-          this.$refs.layoutModal.open();
-        });
-      
-      var label = svg.selectAll(".myText")
-        .data(this.graphData.nodes)
-        .enter()
-        .append("text")
-        .text(function(d) { return d.ip ;})
-        .style("text-anchor", "middle")
-        .style("fill", "#000000")
-        .style("font-family", "Arial")
-        .style("font-size", 13);
-
-      simulation
-        .nodes(this.graphData.nodes)
-        .on("tick", ticked);
-
-      simulation.force("link")
-        .links(this.graphData.links);
-
-      function ticked() {
-        link
-            .attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
-
-        node
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-
-        label
-            .attr("x", function(d) { return d.x; })
-            .attr("y", function (d) { return d.y - 10; });
-      }
-
-      function dragstarted(d) {
-      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
-
-      function dragged(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-      }
-
-      function dragended(d) {
-        if (!d3.event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-      }
-      window.addEventListener('resize', this.handleResize);
-    },
-    delete: function() {
-      window.removeEventListener('resize', this.handleResize);
+      setTimeout(this.drawGraph, 200);
     },
     computed: {
       graphData: {
@@ -178,6 +87,100 @@
       }
     },
     methods: {
+      drawGraph: function() {
+        // Retrieve data for the graph,
+        this.graphData = mockGraph;
+        var svg = d3.select("#svg1");
+        var width = parseInt(svg.style("width"));
+        var height = parseInt(svg.style("height"));
+
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+        var simulation = d3.forceSimulation()
+          .force("link", d3.forceLink().id(function(d) { return d.id; }))
+          .force("link", d3.forceLink().distance(function(d) { return height/2;}).strength(1))
+          .force("charge", d3.forceManyBody().strength(-2500))
+          .force("center", d3.forceCenter(width/2, height/2));
+
+        this.simulation = simulation;
+
+        var link = svg.append("g")
+          .attr("class", "links")
+          .selectAll(".links")
+          .data(this.graphData.links)
+          .enter().append("line")
+          // .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+          .attr("stroke-width", 2);
+
+        var node = svg.append("g")
+          .attr("class", "nodes")
+          .selectAll(".node")
+          .data(this.graphData.nodes)
+          .enter().append("circle")
+            .attr("r", 12)
+            .attr("fill", function(d) { return color(d.group); })
+          .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended))
+          .on("click", d => {
+            this.selectedNode = this.graphData.nodes[d.index];
+            this.$refs.layoutModal.open();
+          });
+
+        var label = svg.selectAll(".myText")
+          .data(this.graphData.nodes)
+          .enter()
+          .append("text")
+          .text(function(d) { return d.ip ;})
+          .style("text-anchor", "middle")
+          .style("fill", "#000000")
+          .style("font-family", "Arial")
+          .style("font-size", 13);
+
+        simulation
+          .nodes(this.graphData.nodes)
+          .on("tick", ticked);
+
+        simulation.force("link")
+          .links(this.graphData.links);
+
+        function ticked() {
+          link
+              .attr("x1", function(d) { return d.source.x; })
+              .attr("y1", function(d) { return d.source.y; })
+              .attr("x2", function(d) { return d.target.x; })
+              .attr("y2", function(d) { return d.target.y; });
+
+          node
+              .attr("cx", function(d) { return d.x; })
+              .attr("cy", function(d) { return d.y; });
+
+          label
+              .attr("x", function(d) { return d.x; })
+              .attr("y", function (d) { return d.y - 10; });
+        }
+
+        function dragstarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        }
+
+        function dragged(d) {
+          d.fx = d3.event.x;
+          d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+          if (!d3.event.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        }
+        window.addEventListener('resize', this.handleResize);
+      },
+      delete: function() {
+        window.removeEventListener('resize', this.handleResize);
+      },
       handleResize: function(event) {
         var svg = d3.select("#svg1");
         var width = parseInt(svg.style("width"));

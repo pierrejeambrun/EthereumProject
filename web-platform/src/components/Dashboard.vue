@@ -1,5 +1,5 @@
 <template>
-  <q-layout ref="layout" view="HHh Lpr fff" :left-class="{'bg-grey-2': true}">
+  <q-layout ref="layout" view="HHH Lpr fff" :left-class="{'bg-grey-2': true}">
     <q-toolbar slot="header" class="glossy">
       <q-btn flat @click="$refs.layout.toggleLeft()">
         <q-icon name="menu" />
@@ -24,7 +24,9 @@
         </q-side-link>
       </div>
     </div>
+
     <router-view/>
+
     <q-toolbar slot="footer">
       <q-toolbar-title>
         <div class="row justify-between">
@@ -34,6 +36,7 @@
       </q-toolbar-title>
     </q-toolbar>
   </q-layout>
+
 </template>
 
 <script>
