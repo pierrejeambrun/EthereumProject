@@ -74,7 +74,7 @@
       }
     },
     mounted: function() {
-      setTimeout(this.drawGraph, 200);
+      this.drawGraph();
     },
     computed: {
       graphData: {
@@ -208,7 +208,7 @@
 .svg
   width 70%
   border 1px solid black
-  opacity 0.97
+  opacity 0.98
 
 .links line
   stroke: #999;
