@@ -1,8 +1,8 @@
 <template>
   <div class="container row justify-center">
-    <div class="message">Network Visualization Page</div>
+    <div class="message text-primary">Network Visualization Page</div>
     <div style="width: 100%"/>
-    <svg class="svg" id="svg1" width="100%" height="600">
+    <svg class="svg bg-primary fixed-center" id="svg1" width="100%" height="600">
     </svg>
     <q-modal ref="layoutModal" v-model="open" minimized>
       <q-toolbar>
@@ -208,8 +208,7 @@
 .svg
   width 70%
   border 1px solid black
-  background-color #737CA1
-  opacity 0.8
+  opacity 0.97
 
 .links line
   stroke: #999;
