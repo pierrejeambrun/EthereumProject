@@ -1,5 +1,10 @@
 <template>
-  <div>Blockchain visualizers Of Node {{ currentNodeId }}</div>
+  <div class="container row justify-center">
+    <div class="message text-primary">Node {{ currentNode.ip }} </div>
+    <div style="width: 100%"/>
+    <svg class="svg bg-primary fixed-center" id="svg1" width="100%" height="600">
+    </svg>
+  </div>
 </template>
 
 <script type="text/javascript">
@@ -9,7 +14,7 @@ export default {
   data: function() {
     return {
       blockchain: true,
-      currentNodeId: this.$store.state.selectedNodeId,
+      currentNode: this.$store.state.selectedNode,
       timer: null
     }
   },
@@ -17,7 +22,7 @@ export default {
     refreshData: function () {
       this.$http.get('https://httpbin.org/get').then(response =>
       {
-        console.log("Refreshed!" + this.currentNodeId);
+        console.log("Refreshed! " + this.currentNode.ip);
         console.log(response.data);});
       }
     },
@@ -34,5 +39,11 @@ export default {
 </script>
 
 <style lang="stylus">
-  
+  .message
+    font-size 2.5em
+
+  .svg
+    width 70%
+    border 1px solid black
+    opacity 0.98
 </style>

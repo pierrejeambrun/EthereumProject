@@ -8,7 +8,7 @@ var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
 const store = new Vuex.Store({
   state: {
     graphData: mockGraph,
-    selectedNodeId: null
+    selectedNode: null
   },
   actions: {
 
@@ -17,8 +17,8 @@ const store = new Vuex.Store({
     setGraph: function(state, newGraph) {
         state.graphData = newGraph;
     },
-    setSelectedNodeId: function(state, Id) {
-      state.selectedNodeId = Id;
+    setSelectedNode: function(state, node) {
+      state.selectedNode = node;
     }
   },
   getters: {

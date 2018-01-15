@@ -39,7 +39,7 @@
         </q-list>
         <br>
         <div class="row justify-between">
-          <q-btn color="primary" @click="open = false; goToBlockChain(selectedNode.id)">Blochain</q-btn>
+          <q-btn color="primary" @click="open = false; goToBlockChain(selectedNode)">Blochain</q-btn>
           <q-btn color="primary" @click="open = false;$refs.layoutModal.close()">Close</q-btn>
         </div>
       </div>
@@ -189,8 +189,8 @@
           this.simulation.force("center", d3.forceCenter(width/2, height/2));
         }
       },
-      goToBlockChain: function(nodeId) {
-        this.$store.commit("setSelectedNodeId", nodeId);
+      goToBlockChain: function(node) {
+        this.$store.commit("setSelectedNode", node);
         this.$router.push({ path: "/blockchain"});
       }
     } 
@@ -198,10 +198,6 @@
 </script>
 
 <style lang="stylus">
-.container
-  width 100%
-  height 100%
-
 .message
   font-size 2.5em
 
