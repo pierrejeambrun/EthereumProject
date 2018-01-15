@@ -2,7 +2,7 @@
   <div class="container row justify-center">
     <div class="message text-primary">Node {{ currentNode.ip }} </div>
     <div style="width: 100%"/>
-    <svg class="svg bg-primary fixed-center" id="svg1" width="100%" height="600">
+    <svg class="svgNode bg-primary fixed-center" id="svg1" width="100%" height="600">
     </svg>
   </div>
 </template>
@@ -42,8 +42,8 @@ export default {
   .message
     font-size 2.5em
 
-  .svg
-    width 70%
+  .svgNode
+    width: 70%
     border 1px solid black
     opacity 0.98
 </style>
