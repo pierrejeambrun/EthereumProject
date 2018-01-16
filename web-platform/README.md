@@ -8,6 +8,9 @@
 # install dependencies
 $ npm install
 
+# install quasar globally
+$ npm install -g quasar-cli
+
 # serve with hot reload at localhost:8080
 $ quasar dev
 
