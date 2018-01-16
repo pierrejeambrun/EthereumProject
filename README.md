@@ -25,5 +25,5 @@ Correctly configure your `genesis.json` block such as:
 
 Launch your private blockchain
 ```shell
-geth --nodiscover --networkid 15 --rpc --rpcapi personal,web3,eth,accounts,admin,miner,net --identity block1 --rpccorsdomain "*" --rpcaddr "0.0.0.0"
+geth --nodiscover --datadir data/db --networkid 15 --rpc --rpcapi personal,web3,eth,accounts,admin,miner,net --identity block1 --rpccorsdomain "*" --rpcaddr "0.0.0.0"
 ```
