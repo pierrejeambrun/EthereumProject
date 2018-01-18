@@ -1,5 +1,8 @@
 # README
 
+### Prerequisite
+If your node is supposed to be mining, you need to have at least 4GB of RAM of the local machine running your node
+
 ### Launch your private blochain
 Correctly configure your `genesis.json` block such as:
 ```javascript
@@ -25,5 +28,6 @@ Correctly configure your `genesis.json` block such as:
 
 Launch your private blockchain
 ```shell
-geth --nodiscover --datadir data/db --networkid 15 --rpc --rpcapi personal,web3,eth,accounts,admin,miner,net --identity block1 --rpccorsdomain "*" --rpcaddr "0.0.0.0"
+geth --nodiscover --datadir data/db --networkid 15 --rpc --rpcapi personal,web3,eth,accounts,admin,miner,net,txpool --identity block1 --rpccorsdomain "*" --rpcaddr <ip> --mine --gasprice "1"
 ```
+
