@@ -21,19 +21,19 @@
       <div class="layout-padding">
         <h3>Information</h3>
         <q-list separator>
-          <q-collapsible icon="home" label="Address" :sublabel="selectedNode ? selectedNode.ip : 'x.x.x.x'">
+          <q-collapsible icon="home" label="Ip Address" :sublabel="selectedNode ? selectedNode.ip : 'x.x.x.x'">
             <div>
-              Content
+              PeerCount: 0x0
             </div>
           </q-collapsible>
-          <q-collapsible icon="perm_identity" label="Miner Id">
+          <q-collapsible icon="perm_identity" label="Node State">
             <div>
-              Content
+              Is Mining: True
             </div>
           </q-collapsible>
-          <q-collapsible icon="shopping_cart" label="Miner Accounts">
-            <div>
-              Content
+          <q-collapsible icon="shopping_cart" label="Eth Accounts">
+            <div style="word-break: break-word">
+              0xd19167868388e320f09d5de3f8d5927f78bc6ce4
             </div>
           </q-collapsible>
         </q-list>
