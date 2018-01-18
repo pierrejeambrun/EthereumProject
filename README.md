@@ -1,9 +1,9 @@
 # README
 
-### Prerequisite
+### I Prerequisite
 If your node is supposed to be mining, you need to have at least 4GB of RAM of the local machine running your node
 
-### Launch your private blochain
+### II Set up your Private Blochain
 Correctly configure your `genesis.json` block such as:
 ```javascript
 {
