@@ -2,7 +2,7 @@
   <div class="container row justify-center">
     <div class="message text-primary">Network Visualization Page</div>
     <div style="width: 100%"/>
-    <svg class="svg bg-primary fixed-center" id="svg1" width="100%" height="600">
+    <svg class="svg bg-primary fixed-center" id="svg1" height="600">
     </svg>
     <q-modal ref="layoutModal" v-model="open" minimized>
       <q-toolbar>
