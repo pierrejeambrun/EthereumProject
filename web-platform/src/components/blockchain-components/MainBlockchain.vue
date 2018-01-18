@@ -18,6 +18,17 @@ export default {
       timer: null
     }
   },
+  computed: {
+    headBlock: function() {
+      var currentHead = null;
+      for (let block of this.blocks) {
+        if (currentHead == null || block.id > currentHead) {
+          currentHead = block;
+        }
+      }
+      return currentHead;
+    }
+  },
   methods: {
     refreshData: function () {
       this.$http.get('https://httpbin.org/get').then(response =>
@@ -42,19 +53,47 @@ export default {
       var paddingTopBottom = 50;
 
       group.append("rect")
-        .attr("x", function(d, i) { return i * (blockWidth + blockWidth / 2) + blockWidth / 2 - paddingLeftRight/2; })
-        .attr("y", function(d) { return height / 2 - blockHeight / 2 - paddingTopBottom/2; })
+        .attr("x", function(d, i) { return i * (blockWidth + blockWidth / 2) + blockWidth / 2 - paddingLeftRight / 2; })
+        .attr("y", height / 2 - blockHeight / 2 - paddingTopBottom / 2)
+        .attr("rx", 10)
+        .attr("ry", 10)
         .attr("width", function(d) { return blockWidth; })
         .attr("height", function(d) { return blockHeight; })
-        .attr("fill", "#555");
+        .attr("fill", "#555")
+        .style("stroke", "grey")
+        .style("stroke-width", 3);
 
       group.append("text")
         .attr("x", function(d, i) { return i * (blockWidth + blockWidth / 2) + blockWidth / 2; })
-        .attr("y", function(d) { return height / 2 - blockHeight / 2; })
+        .attr("y", height / 2 - blockHeight / 2)
         .attr("fill", "#FFF")
         .attr("group-anchor", "middle")
         .style("font-family", "Arial")
-        .text(function(d) { return d.id + "\n" + "Second line"; });
+        .style("font-size", 20)
+        .text(function(d) { return "Block id: " + d.id });
+
+      group = group.data(this.blocks.filter((d) => d.id != this.headBlock.id));
+
+      //Arrow
+      group.append("line")
+        .attr("x1", function(d, i) { return (i + 1) * (blockWidth + blockWidth / 2) - paddingLeftRight / 2; })
+        .attr("y1", height / 2 - paddingTopBottom / 2)
+        .attr("x2", function(d, i) { return (i + 1) * (blockWidth + blockWidth / 2) + blockWidth / 2 - paddingLeftRight / 2 - 5; })
+        .attr("y2", height / 2 - paddingTopBottom / 2)
+        .attr("stroke-width", 1)
+        .attr("stroke", "black")
+        .attr("marker-end", "url(#triangle)");
+
+      group.append("svg:defs").append("svg:marker")
+        .attr("id", "triangle")
+        .attr("refX", 6)
+        .attr("refY", 6)
+        .attr("markerWidth", 30)
+        .attr("markerHeight", 30)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M 0 0 12 6 0 12 3 6")
+        .style("fill", "black");
     }
   },
   mounted: function() {
