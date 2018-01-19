@@ -37,8 +37,11 @@ export default {
   },
   methods: {
     refreshData: function () {
-      var jsonBody = {};
-      httpService.sendRequest();
+      httpService.getBlockNumber(this.node.ip).then((response) => {
+        console.log(response);
+      }, (error) => {
+        alert("Something went wrong!");
+      });
     },
     drawBlockchain: function() {
       var svg = d3.select("#svgBC");
