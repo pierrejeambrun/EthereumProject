@@ -1,10 +1,9 @@
 <template>
   <div class="container row justify-center">
     <div class="message text-primary">Network Visualization Page</div>
-    <div style="width: 100%"/>
     <svg class="svg bg-primary fixed-center" id="svg1" height="600">
     </svg>
-    <q-modal ref="layoutModal" v-model="open" minimized>
+    <q-modal ref="layoutModal" v-model="open"  @open="fixeWitdh" minimized>
       <q-toolbar>
         <q-btn flat @click="open = false ;$refs.layoutModal.close()">
           <q-icon name="keyboard_arrow_left" />
@@ -31,16 +30,16 @@
               Is Mining: True
             </div>
           </q-collapsible>
-          <q-collapsible icon="shopping_cart" label="Eth Accounts">
-            <div style="word-break: break-word">
+          <q-collapsible icon="shopping_cart" label="Eth Accounts" id="element">
+            <div style="word-break: break-all">
               0xd19167868388e320f09d5de3f8d5927f78bc6ce4
             </div>
           </q-collapsible>
         </q-list>
         <br>
         <div class="row justify-between">
-          <q-btn color="primary" @click="open = false; goToBlockChain(selectedNode)">Blochain</q-btn>
-          <q-btn color="primary" @click="open = false;$refs.layoutModal.close()">Close</q-btn>
+          <q-btn color="primary" @click="goToBlockChain(selectedNode)">Blochain</q-btn>
+          <q-btn color="primary" @click="$refs.layoutModal.close()">Close</q-btn>
         </div>
       </div>
     </q-modal>
@@ -192,6 +191,10 @@
       goToBlockChain: function(node) {
         this.$store.commit("setSelectedNode", node);
         this.$router.push({ path: "/blockchain"});
+      },
+      fixeWitdh: function() {
+        console.log($("#element").width());
+        $("#element").css("max-width", $("#element").width());
       }
     } 
   }

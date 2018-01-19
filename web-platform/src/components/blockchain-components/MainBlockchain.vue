@@ -59,8 +59,8 @@ export default {
         .attr("ry", 10)
         .attr("width", function(d) { return blockWidth; })
         .attr("height", function(d) { return blockHeight; })
-        .attr("fill", "#555")
-        .style("stroke", "grey")
+        .attr("fill", "rgb(66, 165, 245")
+        .style("stroke", "black")
         .style("stroke-width", 3);
 
       group.append("foreignObject")
@@ -68,7 +68,6 @@ export default {
         .attr("y", height / 2 - blockHeight / 2)
         .attr("width", blockWidth)
         .attr("height", blockHeight - paddingLeftRight)
-        .attr("fill", "#FFF")
         .attr("group-anchor", "middle")
         .style("font-family", "Arial")
         .style("font-size", 20)
