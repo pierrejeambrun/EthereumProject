@@ -19,14 +19,21 @@ export default {
     }
   },
   computed: {
-    headBlock: function() {
+    delimiterBlocks: function() {
       var currentHead = null;
+      var currentTail = null;
       for (let block of this.blocks) {
         if (currentHead == null || block.id > currentHead) {
           currentHead = block;
         }
+        if (currentTail == null || block.id < currentTail) {
+          currentTail = block;
+        }
       }
-      return currentHead;
+      return { tailBlock: currentTail, headBlock: currentHead };
+    },
+    latestBlock: function() {
+      return 6;
     }
   },
   methods: {
@@ -42,7 +49,7 @@ export default {
       var width = parseInt(svg.style("width"));
       var height = parseInt(svg.style("height"));
 
-      var blockWidth = width / 5;
+      var blockWidth = width / 4.7;
       var blockHeight = height / 4;
 
       var group = svg.selectAll("g")
@@ -66,20 +73,21 @@ export default {
       group.append("foreignObject")
         .attr("x", function(d, i) { return i * (blockWidth + blockWidth / 2) + blockWidth / 2; })
         .attr("y", height / 2 - blockHeight / 2)
-        .attr("width", blockWidth)
+        .attr("width", blockWidth - paddingLeftRight)
         .attr("height", blockHeight - paddingLeftRight)
         .attr("group-anchor", "middle")
         .style("font-family", "Arial")
-        .style("font-size", 20)
-        .html(function(d) {return "<div>" +
-                                      "Block id: " + d.id + "<br>" +
-                                      "Nb Transac: " + d.result.transactions.length + "<br>" +
-                                      "Difficulty: " + d.result.difficulty + "<br>" +
-                                      "Gas used: "  + d.result.gasUsed + "<br>" +
-                                      "Date: "+ new Date(parseInt(d.result.timestamp)) + "<br>" +
+        .html(function(d) {return "<div style='overflow-y: hidden; height: " + (blockHeight - paddingTopBottom / 2) + "px' >" +
+                                      "<div style='font-size: 20px;'>" +
+                                        "Block id: " + d.id + "<br>" +
+                                        "Nb Transac: " + d.result.transactions.length + "<br>" +
+                                        "Difficulty: " + d.result.difficulty + "<br>" +
+                                        "Gas used: "  + d.result.gasUsed + "<br>" +
+                                        "Date: "+ new Date(parseInt(d.result.timestamp * 1000)) + "<br>" +
+                                        "</div>" +
                                   "</div>";});
 
-      group = group.data(this.blocks.filter((d) => d.id != this.headBlock.id));
+      group = group.data(this.blocks.filter((d) => d.id != this.delimiterBlocks.headBlock.id));
 
       //Arrow
       group.append("line")
@@ -101,6 +109,8 @@ export default {
         .append("path")
         .attr("d", "M 0 0 12 6 0 12 3 6")
         .style("fill", "black");
+
+
     }
   },
   mounted: function() {
