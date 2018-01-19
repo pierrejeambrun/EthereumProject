@@ -1,6 +1,6 @@
 <template>
   <div class="container row justify-center">
-    <div class="message text-primary">Node {{ currentNode ? currentNode.ip : ""}} </div>
+    <div class="message text-primary">Node {{ node.ip }} </div>
     <svg class="svgBC bg-primary fixed-center" id="svgBC" height="600">
     </svg>
   </div>
@@ -8,14 +8,16 @@
 
 <script type="text/javascript">
 import * as d3 from "d3";
+import httpService from "../../services/httpService";
 
 export default {
   name: "main-blockchain",
   data: function() {
     return {
       blocks: require("../../assets/data/mock/mockBlockChain.json"),
-      currentNode: this.$store.state.selectedNode,
-      timer: null
+      node: this.$store.state.selectedNode,
+      timer: null,
+      latestBlock: null
     }
   },
   computed: {
@@ -32,17 +34,11 @@ export default {
       }
       return { tailBlock: currentTail, headBlock: currentHead };
     },
-    latestBlock: function() {
-      return 6;
-    }
   },
   methods: {
     refreshData: function () {
-      this.$http.get('https://httpbin.org/get').then(response =>
-      {
-        console.log("Refreshed! ");
-        console.log(response.data);
-      });
+      var jsonBody = {};
+      httpService.sendRequest();
     },
     drawBlockchain: function() {
       var svg = d3.select("#svgBC");
@@ -87,7 +83,12 @@ export default {
                                         "</div>" +
                                   "</div>";});
 
-      group = group.data(this.blocks.filter((d) => d.id != this.delimiterBlocks.headBlock.id));
+      group = group.data(this.blocks.filter((d) => {
+        if (this.latestBlock == null) {
+          return true;
+        }
+        return d.id != this.latestBlock.id;
+      }));
 
       //Arrow
       group.append("line")

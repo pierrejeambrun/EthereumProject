@@ -51,7 +51,6 @@
   import { Node } from "structures/Nodes"
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
 
-
   var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
 
   export default {
@@ -193,7 +192,6 @@
         this.$router.push({ path: "/blockchain"});
       },
       fixeWitdh: function() {
-        console.log($("#element").width());
         $("#element").css("max-width", $("#element").width());
       }
     } 
