@@ -50,7 +50,7 @@ export default {
                 .enter().append("g");
 
       var paddingLeftRight = 18;
-      var paddingTopBottom = 50;
+      var paddingTopBottom = 20;
 
       group.append("rect")
         .attr("x", function(d, i) { return i * (blockWidth + blockWidth / 2) + blockWidth / 2 - paddingLeftRight / 2; })
@@ -63,14 +63,22 @@ export default {
         .style("stroke", "grey")
         .style("stroke-width", 3);
 
-      group.append("text")
+      group.append("foreignObject")
         .attr("x", function(d, i) { return i * (blockWidth + blockWidth / 2) + blockWidth / 2; })
         .attr("y", height / 2 - blockHeight / 2)
+        .attr("width", blockWidth)
+        .attr("height", blockHeight - paddingLeftRight)
         .attr("fill", "#FFF")
         .attr("group-anchor", "middle")
         .style("font-family", "Arial")
         .style("font-size", 20)
-        .text(function(d) { return "Block id: " + d.id });
+        .html(function(d) {return "<div>" +
+                                      "Block id: " + d.id + "<br>" +
+                                      "Nb Transac: " + d.result.transactions.length + "<br>" +
+                                      "Difficulty: " + d.result.difficulty + "<br>" +
+                                      "Gas used: "  + d.result.gasUsed + "<br>" +
+                                      "Date: "+ new Date(parseInt(d.result.timestamp)) + "<br>" +
+                                  "</div>";});
 
       group = group.data(this.blocks.filter((d) => d.id != this.headBlock.id));
 
