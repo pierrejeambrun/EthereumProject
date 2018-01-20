@@ -172,9 +172,6 @@
         }
         window.addEventListener('resize', this.handleResize);
       },
-      delete: function() {
-        window.removeEventListener('resize', this.handleResize);
-      },
       handleResize: function(event) {
         var svg = d3.select("#svg1");
         var width = parseInt(svg.style("width"));
@@ -190,7 +187,10 @@
       fixeWitdh: function() {
         $("#element").css("max-width", $("#element").width());
       }
-    } 
+    },
+    destroyed: function() {
+        window.removeEventListener('resize', this.handleResize);
+    }
   }
 </script>
 
