@@ -12,9 +12,23 @@
           Error :(
         </div>
       </q-toolbar>
-      <div class="layout-padding" style="text-align: center">
+      <div class="layout-padding">
         <p>The address {{ node.ip }} is unreachable, <br> verify that the node is up!</p>
         <q-btn color="red" @click="modalButtonClickedHandler()">Go Back</q-btn>
+      </div>
+    </q-modal>
+    <q-modal ref="infoModal" minimized>
+      <q-toolbar>
+        <q-btn flat @click="$refs.infoModal.close()">
+          <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+        <div class="q-toolbar-title">
+          Block Information
+        </div>
+      </q-toolbar>
+      <div class="layout-padding" style="text-align: center; overflow: hidden">
+        <p>{{ selectedBlock }}</p>
+        <q-btn color="primary" @click="$refs.infoModal.close()">Go Back</q-btn>
       </div>
     </q-modal>
   </div>
@@ -40,6 +54,7 @@ export default {
       timer: null,
       latestBlock: null,
       nodeUnreachable: false,
+      selectedBlock: null,
     }
   },
   computed: {
@@ -78,7 +93,13 @@ export default {
 
       var group = svg.selectAll("g")
                   .data(this.blocks)
-                .enter().append("g");
+                .enter().append("g")
+                .style("cursor", "pointer")
+                .on("click", d => {
+                  this.selectedBlock = d;
+                  this.$refs.infoModal.open();
+                  console.log("Ive been clicked!");
+                });;
 
       var paddingLeftRight = 18;
       var paddingTopBottom = 20;

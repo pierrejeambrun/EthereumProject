@@ -10,7 +10,6 @@ export default {
       id: 2
     }
   },
-
   // Miner
   startMiner(ipAddress) {
     var data = this.prepareRequestBody("miner_start", []);

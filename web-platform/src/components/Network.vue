@@ -105,6 +105,7 @@
           .attr("stroke-width", 2);
 
         var node = svg.append("g")
+          .style("cursor", "pointer")
           .attr("class", "nodes")
           .selectAll(".node")
           .data(this.graphData.nodes)
