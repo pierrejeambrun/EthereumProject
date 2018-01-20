@@ -3,21 +3,43 @@
     <div class="message text-primary">Node {{ node.ip }} </div>
     <svg class="svgBC bg-primary fixed-center" id="svgBC" height="600">
     </svg>
+    <q-modal ref="unreachableModal" v-model="nodeUnreachable" minimized>
+      <q-toolbar>
+        <q-btn flat @click="modalButtonClickedHandler()">
+          <q-icon name="keyboard_arrow_left" />
+        </q-btn>
+        <div class="q-toolbar-title">
+          Error :(
+        </div>
+      </q-toolbar>
+      <div class="layout-padding" style="text-align: center">
+        <p>The address {{ node.ip }} is unreachable, <br> verify that the node is up!</p>
+        <q-btn color="red" @click="modalButtonClickedHandler()">Go Back</q-btn>
+      </div>
+    </q-modal>
   </div>
 </template>
 
 <script type="text/javascript">
 import * as d3 from "d3";
 import httpService from "../../services/httpService";
+import { QModal, QBtn, QToolbar, QIcon } from "quasar";
 
 export default {
   name: "main-blockchain",
+  components: {
+    QModal,
+    QBtn,
+    QToolbar,
+    QIcon
+  },
   data: function() {
     return {
       blocks: require("../../assets/data/mock/mockBlockChain.json"),
       node: this.$store.state.selectedNode,
       timer: null,
-      latestBlock: null
+      latestBlock: null,
+      nodeUnreachable: false,
     }
   },
   computed: {
@@ -38,9 +60,12 @@ export default {
   methods: {
     refreshData: function () {
       httpService.getBlockNumber(this.node.ip).then((response) => {
-        console.log(response);
+        let numberOfBlock = parseInt(response.data.result, 16);
+        if (numberOfBlock != this.latestBlock) {
+          console.log("New block in, refresh!");
+        }
       }, (error) => {
-        alert("Something went wrong!");
+        this.nodeUnreachable = true;
       });
     },
     drawBlockchain: function() {
@@ -115,6 +140,9 @@ export default {
         .style("fill", "black");
 
 
+    },
+    modalButtonClickedHandler: function() {
+      this.$router.push("/network");
     }
   },
   mounted: function() {

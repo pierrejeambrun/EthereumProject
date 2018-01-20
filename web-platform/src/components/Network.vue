@@ -12,11 +12,6 @@
           Information on Node {{ selectedNode ? selectedNode.id : ""}}
         </div>
       </q-toolbar>
-      <q-toolbar slot="footer">
-        <div class="q-toolbar-title">
-          Footer
-        </div>
-      </q-toolbar>
       <div class="layout-padding">
         <h3>Information</h3>
         <q-list separator>
