@@ -8,12 +8,12 @@
         <q-spinner-ios color="red" :size="100"> </q-spinner-ios>
       </div>
       <div class="row justify-between" style="max-width: 45%; margin-left: 25%">
-        <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousBlocks()">
+        <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousButtonHandler()">
           <q-icon name="keyboard_arrow_left" />
           Previous Blocks
         </q-btn>
         <div v-else/>
-        <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextBlocks()">
+        <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextButtonHandler()">
           Next Blocks
           <q-icon name="keyboard_arrow_right" />
         </q-btn>
@@ -99,7 +99,7 @@ export default {
         let numberOfBlock = parseInt(response.data.result, 16);
         if (numberOfBlock != this.latestBlock) {
           // A new block came in, fetch it and update the visualization.
-          this.getLastBlocks(numberOfBlock).then((responses) => {
+          this.getPreviousBlocks(numberOfBlock).then((responses) => {
             this.blocks = [];
             this.latestBlock = numberOfBlock;
             for (let response of responses) {
@@ -115,12 +115,19 @@ export default {
         this.nodeUnreachable = true;
       });
     },
-    getLastBlocks: function (currentBlockId) {
+    getPreviousBlocks: function (currentBlockId) {
       let numberOfBlockToRetrieve = 2; // Will retrieve numberOfBlockToRetrieve + 1 blocks
-      let min = Math.min(currentBlockId, numberOfBlockToRetrieve);
       let promises = [];
-      for (let i = min; i >= 0; i--) {
+      for (let i = numberOfBlockToRetrieve; i >= 0; i--) {
         promises.push(httpService.getBlockByNumber(this.node.ip, currentBlockId - i));
+      }
+      return Promise.all(promises);
+    },
+    getNextBlocks: function (currentBlockId) {
+      let numberOfBlockToRetrieve = 2; // Will retrieve numberOfBlockToRetrieve + 1 blocks
+      let promises = [];
+      for (let i = 0; i <= numberOfBlockToRetrieve; i++) {
+        promises.push(httpService.getBlockByNumber(this.node.ip, currentBlockId + i));
       }
       return Promise.all(promises);
     },
@@ -222,11 +229,24 @@ export default {
     modalButtonClickedHandler: function() {
       this.$router.push("/network");
     },
-    nextBlocks: function () {
-
+    nextButtonHandler: function () {
+      this.getNextBlocks(Math.min(this.delimiterBlocksId.head + 1, this.latestBlock - 2)).then((responses) => {
+            this.blocks = [];
+            console.log(responses);
+            for (let response of responses) {
+              response.body.result.id = parseInt(response.body.result.number, 16);
+              this.blocks.push(response.body);
+              console.log(response.body);
+            }
+            this.$nextTick(() => {
+              var svg = d3.select("#svgBC");
+              svg.selectAll("*").remove();
+              this.drawBlockchain();
+            });
+          });
     },
-    previousBlocks: function() {
-      this.getLastBlocks(Math.max(this.delimiterBlocksId.tail - 1, 2)).then((responses) => {
+    previousButtonHandler: function() {
+      this.getPreviousBlocks(Math.max(this.delimiterBlocksId.tail - 1, 2)).then((responses) => {
             this.blocks = [];
             for (let response of responses) {
               response.body.result.id = parseInt(response.body.result.number, 16);
