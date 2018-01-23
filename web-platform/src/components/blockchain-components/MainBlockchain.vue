@@ -1,10 +1,23 @@
 <template>
   <div class="container row justify-center">
     <div class="message text-primary">Node {{ node.ip }} </div>
-    <svg v-if="blocks != null" class="svgBC bg-primary fixed-center" id="svgBC" height="600">
-    </svg>
-    <div v-else class="fixed-center">
-      <q-spinner-ios color="red" :size="100"> </q-spinner-ios>
+    <div class="fixed-center" style="width: 70%">
+      <svg v-if="blocks != null" class="svgBC bg-primary" id="svgBC" height="600">
+      </svg>
+      <div v-else class="fixed-center">
+        <q-spinner-ios color="red" :size="100"> </q-spinner-ios>
+      </div>
+      <div class="row justify-between" style="max-width: 45%; margin-left: 25%">
+        <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousBlocks()">
+          <q-icon name="keyboard_arrow_left" />
+          Previous Blocks
+        </q-btn>
+        <div v-else/>
+        <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextBlocks()">
+          Next Blocks
+          <q-icon name="keyboard_arrow_right" />
+        </q-btn>
+      </div>
     </div>
     <q-modal ref="unreachableModal" v-model="nodeUnreachable" minimized>
       <q-toolbar>
@@ -62,18 +75,22 @@ export default {
     }
   },
   computed: {
-    delimiterBlocks: function() {
+    delimiterBlocksId: function() {
       var currentHead = null;
       var currentTail = null;
+      if (this.blocks == null) {
+        return { tail: currentTail, head: currentHead };
+      }
       for (let block of this.blocks) {
-        if (currentHead == null || block.id > currentHead) {
-          currentHead = block.id;
+        let currentId = block.result.id;
+        if (currentHead == null || currentId > currentHead) {
+          currentHead = currentId;
         }
-        if (currentTail == null || block.id < currentTail) {
-          currentTail = block.id;
+        if (currentTail == null || currentId < currentTail) {
+          currentTail = currentId;
         }
       }
-      return { tailBlock: currentTail, headBlock: currentHead };
+      return { tail: currentTail, head: currentHead };
     },
   },
   methods: {
@@ -81,23 +98,26 @@ export default {
       httpService.getBlockNumber(this.node.ip).then((response) => {
         let numberOfBlock = parseInt(response.data.result, 16);
         if (numberOfBlock != this.latestBlock) {
+          // A new block came in, fetch it and update the visualization.
           this.getLastBlocks(numberOfBlock).then((responses) => {
             this.blocks = [];
             this.latestBlock = numberOfBlock;
             for (let response of responses) {
+              response.body.result.id = parseInt(response.body.result.number, 16);
               this.blocks.push(response.body);
               console.log(response.body);
             }
             this.$nextTick(this.drawBlockchain);
           });
         }
+        // No new block to fetch
       }, (error) => {
         this.nodeUnreachable = true;
       });
     },
     getLastBlocks: function (currentBlockId) {
-      let numberOfBlockTORetrieve = 2; // Will retrive 3 blocks
-      let min = Math.min(currentBlockId, numberOfBlockTORetrieve);
+      let numberOfBlockToRetrieve = 2; // Will retrieve numberOfBlockToRetrieve + 1 blocks
+      let min = Math.min(currentBlockId, numberOfBlockToRetrieve);
       let promises = [];
       for (let i = min; i >= 0; i--) {
         promises.push(httpService.getBlockByNumber(this.node.ip, currentBlockId - i));
@@ -144,7 +164,7 @@ export default {
         .style("font-family", "Arial")
         .html(function(d) {return "<div style='overflow-y: hidden; height: " + (blockHeight - paddingTopBottom / 2) + "px' >" +
                                       "<div style='font-size: 20px;'>" +
-                                        "Block id: " + parseInt(d.result.number, 16) + "<br>" +
+                                        "Block id: " + d.result.id + "<br>" +
                                         "Nb Transac: " + d.result.transactions.length + "<br>" +
                                         "Difficulty: " + d.result.difficulty + "<br>" +
                                         "Gas used: "  + d.result.gasUsed + "<br>" +
@@ -177,7 +197,7 @@ export default {
         .attr("d", "M 0 0 12 6 0 12 3 6")
         .style("fill", "black");
 
-      if (this.blocks[0] != 0) {
+      if (this.blocks[0].result.id != 0) {
         svg.append("line")
           .attr("x1", - paddingLeftRight / 2)
           .attr("y1", height / 2 - paddingTopBottom / 2)
@@ -201,6 +221,24 @@ export default {
     },
     modalButtonClickedHandler: function() {
       this.$router.push("/network");
+    },
+    nextBlocks: function () {
+
+    },
+    previousBlocks: function() {
+      this.getLastBlocks(Math.max(this.delimiterBlocksId.tail - 1, 2)).then((responses) => {
+            this.blocks = [];
+            for (let response of responses) {
+              response.body.result.id = parseInt(response.body.result.number, 16);
+              this.blocks.push(response.body);
+              console.log(response.body);
+            }
+            this.$nextTick(() => {
+              var svg = d3.select("#svgBC");
+              svg.selectAll("*").remove();
+              this.drawBlockchain();
+            });
+          });
     }
   },
   mounted: function() {
@@ -220,7 +258,7 @@ export default {
     font-size 2.5em
 
   .svgBC
-    width: 70%
+    width: 100%
     border 1px solid black
     opacity 0.98
 </style>

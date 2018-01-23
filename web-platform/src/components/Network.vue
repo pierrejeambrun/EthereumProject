@@ -33,7 +33,7 @@
         </q-list>
         <br>
         <div class="row justify-between">
-          <q-btn color="primary" @click="goToBlockChain(selectedNode)">Blochain</q-btn>
+          <q-btn color="primary" @click="goToBlockChain(selectedNode)">Blockchain</q-btn>
           <q-btn color="primary" @click="$refs.layoutModal.close()">Close</q-btn>
         </div>
       </div>
