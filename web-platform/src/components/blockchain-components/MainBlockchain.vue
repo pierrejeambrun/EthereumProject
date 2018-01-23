@@ -1,8 +1,11 @@
 <template>
   <div class="container row justify-center">
     <div class="message text-primary">Node {{ node.ip }} </div>
-    <svg class="svgBC bg-primary fixed-center" id="svgBC" height="600">
+    <svg v-if="blocks != null" class="svgBC bg-primary fixed-center" id="svgBC" height="600">
     </svg>
+    <div v-else class="fixed-center">
+      <q-spinner-ios color="red" :size="100"> </q-spinner-ios>
+    </div>
     <q-modal ref="unreachableModal" v-model="nodeUnreachable" minimized>
       <q-toolbar>
         <q-btn flat @click="modalButtonClickedHandler()">
@@ -28,7 +31,7 @@
       </q-toolbar>
       <div class="layout-padding" style="text-align: center; overflow: hidden">
         <p>{{ selectedBlock }}</p>
-        <q-btn color="primary" @click="$refs.infoModal.close()">Go Back</q-btn>
+        <q-btn color="primary" @click="$refs.infoModal.close()">OK</q-btn>
       </div>
     </q-modal>
   </div>
@@ -37,7 +40,7 @@
 <script type="text/javascript">
 import * as d3 from "d3";
 import httpService from "../../services/httpService";
-import { QModal, QBtn, QToolbar, QIcon } from "quasar";
+import { QModal, QBtn, QToolbar, QIcon, QSpinnerIos } from "quasar";
 
 export default {
   name: "main-blockchain",
@@ -45,11 +48,12 @@ export default {
     QModal,
     QBtn,
     QToolbar,
-    QIcon
+    QIcon,
+    QSpinnerIos
   },
   data: function() {
     return {
-      blocks: require("../../assets/data/mock/mockBlockChain.json"),
+      blocks: null,
       node: this.$store.state.selectedNode,
       timer: null,
       latestBlock: null,
@@ -171,7 +175,6 @@ export default {
     if (this.timer == null) {
       this.timer = setInterval(() => this.refreshData(), 2000);
     }
-    this.drawBlockchain();
   },
   beforeDestroy: function () {
     clearInterval(this.timer);
