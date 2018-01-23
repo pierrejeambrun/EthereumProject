@@ -67,10 +67,10 @@ export default {
       var currentTail = null;
       for (let block of this.blocks) {
         if (currentHead == null || block.id > currentHead) {
-          currentHead = block;
+          currentHead = block.id;
         }
         if (currentTail == null || block.id < currentTail) {
-          currentTail = block;
+          currentTail = block.id;
         }
       }
       return { tailBlock: currentTail, headBlock: currentHead };
@@ -81,11 +81,28 @@ export default {
       httpService.getBlockNumber(this.node.ip).then((response) => {
         let numberOfBlock = parseInt(response.data.result, 16);
         if (numberOfBlock != this.latestBlock) {
-          console.log("New block in, refresh!");
+          this.getLastBlocks(numberOfBlock).then((responses) => {
+            this.blocks = [];
+            this.latestBlock = numberOfBlock;
+            for (let response of responses) {
+              this.blocks.push(response.body);
+              console.log(response.body);
+            }
+            this.$nextTick(this.drawBlockchain);
+          });
         }
       }, (error) => {
         this.nodeUnreachable = true;
       });
+    },
+    getLastBlocks: function (currentBlockId) {
+      let numberOfBlockTORetrieve = 2; // Will retrive 3 blocks
+      let min = Math.min(currentBlockId, numberOfBlockTORetrieve);
+      let promises = [];
+      for (let i = min; i >= 0; i--) {
+        promises.push(httpService.getBlockByNumber(this.node.ip, currentBlockId - i));
+      }
+      return Promise.all(promises);
     },
     drawBlockchain: function() {
       var svg = d3.select("#svgBC");
@@ -102,7 +119,6 @@ export default {
                 .on("click", d => {
                   this.selectedBlock = d;
                   this.$refs.infoModal.open();
-                  console.log("Ive been clicked!");
                 });;
 
       var paddingLeftRight = 18;
@@ -128,7 +144,7 @@ export default {
         .style("font-family", "Arial")
         .html(function(d) {return "<div style='overflow-y: hidden; height: " + (blockHeight - paddingTopBottom / 2) + "px' >" +
                                       "<div style='font-size: 20px;'>" +
-                                        "Block id: " + d.id + "<br>" +
+                                        "Block id: " + parseInt(d.result.number, 16) + "<br>" +
                                         "Nb Transac: " + d.result.transactions.length + "<br>" +
                                         "Difficulty: " + d.result.difficulty + "<br>" +
                                         "Gas used: "  + d.result.gasUsed + "<br>" +
@@ -137,10 +153,7 @@ export default {
                                   "</div>";});
 
       group = group.data(this.blocks.filter((d) => {
-        if (this.latestBlock == null) {
-          return true;
-        }
-        return d.id != this.latestBlock.id;
+        return parseInt(d.result.number, 16) != this.latestBlock;
       }));
 
       //Arrow
@@ -164,7 +177,27 @@ export default {
         .attr("d", "M 0 0 12 6 0 12 3 6")
         .style("fill", "black");
 
+      if (this.blocks[0] != 0) {
+        svg.append("line")
+          .attr("x1", - paddingLeftRight / 2)
+          .attr("y1", height / 2 - paddingTopBottom / 2)
+          .attr("x2", blockWidth / 2 - paddingLeftRight / 2 - 5)
+          .attr("y2", height / 2 - paddingTopBottom / 2)
+          .attr("stroke-width", 1)
+          .attr("stroke", "black")
+          .attr("marker-end", "url(#triangle)");
 
+        svg.append("svg:defs").append("svg:marker")
+          .attr("id", "triangle")
+          .attr("refX", 6)
+          .attr("refY", 6)
+          .attr("markerWidth", 30)
+          .attr("markerHeight", 30)
+          .attr("orient", "auto")
+          .append("path")
+          .attr("d", "M 0 0 12 6 0 12 3 6")
+          .style("fill", "black");
+      }
     },
     modalButtonClickedHandler: function() {
       this.$router.push("/network");

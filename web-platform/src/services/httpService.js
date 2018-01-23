@@ -10,6 +10,9 @@ export default {
       id: 2
     }
   },
+  formatHex(number) {
+    return "0x" + number.toString(16);
+  },
   // Miner
   startMiner(ipAddress) {
     var data = this.prepareRequestBody("miner_start", []);
@@ -30,7 +33,7 @@ export default {
     return this.http.post('http://' + ipAddress + ":8545", data);
   },
   getBlockByNumber(ipAddress, blockId) {
-    var data = this.prepareRequestBody("eth_getBlockByNumber", [blockId.toString(16), true]);
+    var data = this.prepareRequestBody("eth_getBlockByNumber", [this.formatHex(blockId), true]);
     return this.http.post('http://' + ipAddress + ":8545", data);
   },
   getPendingTransactions(ipAddress) {
@@ -48,7 +51,7 @@ export default {
       blockId = "latest";
     } else {
       if (typeof blockId == "number") {
-        blockId = blockId.toString(16);
+        blockId = this.formatHex(blockId);
       }
     }
     var data = this.prepareRequestBody("eth_getBalance", [accountAddress, blockId]);
@@ -58,7 +61,7 @@ export default {
     params = {
       from: fromAddress,
       to: toAddress,
-      value: value.toString(16)
+      value: this.formatHex(value)
     }
     var data = this.prepareRequestBody("eth_estimateGas", [params]);
     return this.http.post('http://' + ipAddress + ":8545", data);
@@ -71,9 +74,9 @@ export default {
     params = {
       from: fromAddress,
       to: toAddress,
-      value: value.toString(16),
-      gas: gas.toString(16),
-      gasPrice: gasPrice.toString(16),
+      value: this.formatHex(value),
+      gas: this.formatHex(gas),
+      gasPrice: this.formatHex(gasPrice)
     }
     var data = this.prepareRequestBody("personal_sendTransaction", [params, password]);
     return this.http.post('http://' + ipAddress + ":8545", data);
