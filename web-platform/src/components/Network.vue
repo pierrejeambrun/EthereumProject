@@ -1,6 +1,10 @@
 <template>
-  <div class="container row justify-center">
-    <div class="message text-primary">Network Visualization Page</div>
+  <div>
+    <q-toolbar class="bg-tertiary">
+      <q-toolbar-title  class="text-center" style="font-size: 1.5em">
+        Network Visualization
+      </q-toolbar-title>
+    </q-toolbar>
     <svg class="svg bg-primary fixed-center" id="svg1" height="600">
     </svg>
     <q-modal ref="layoutModal" v-model="open"  @open="fixeWitdh" minimized>

@@ -1,6 +1,10 @@
 <template>
-  <div class="container row justify-center">
-    <div class="message text-primary">Node {{ node.ip }} </div>
+  <div>
+    <q-toolbar class="bg-tertiary">
+      <q-toolbar-title  class="text-center" style="font-size: 1.5em">
+        Node {{ node.ip }}
+      </q-toolbar-title>
+    </q-toolbar>
     <div class="fixed-center" style="width: 70%">
       <div v-if="blocks != null">
         <svg class="svgBC bg-primary" id="svgBC" height="600">
@@ -55,7 +59,7 @@
 <script type="text/javascript">
 import * as d3 from "d3";
 import httpService from "../../services/httpService";
-import { QModal, QBtn, QToolbar, QIcon, QSpinnerIos } from "quasar";
+import { QModal, QBtn, QToolbar, QIcon, QSpinnerIos, QToolbarTitle } from "quasar";
 
 export default {
   name: "main-blockchain",
@@ -64,7 +68,8 @@ export default {
     QBtn,
     QToolbar,
     QIcon,
-    QSpinnerIos
+    QSpinnerIos,
+    QToolbarTitle
   },
   data: function() {
     return {
