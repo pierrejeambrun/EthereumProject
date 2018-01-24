@@ -49,7 +49,7 @@
         </div>
       </q-toolbar>
       <div class="layout-padding" style="text-align: center; overflow: hidden">
-        <p>{{ selectedBlock }}</p>
+        <blockdetails :block="selectedBlock"></blockdetails>
         <q-btn color="primary" @click="$refs.infoModal.close()">OK</q-btn>
       </div>
     </q-modal>
@@ -60,6 +60,7 @@
 import * as d3 from "d3";
 import httpService from "../../services/httpService";
 import { QModal, QBtn, QToolbar, QIcon, QSpinnerIos, QToolbarTitle } from "quasar";
+import BlockDetails from "./BlockDetails";
 
 export default {
   name: "main-blockchain",
@@ -69,7 +70,9 @@ export default {
     QToolbar,
     QIcon,
     QSpinnerIos,
-    QToolbarTitle
+    QToolbarTitle,
+    'blockdetails': BlockDetails
+
   },
   data: function() {
     return {
