@@ -8,12 +8,12 @@
         <q-spinner-ios color="red" :size="100"> </q-spinner-ios>
       </div>
       <div class="row justify-between" style="max-width: 45%; margin-left: 25%">
-        <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousButtonHandler()">
+        <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousButtonHandler()" big>
           <q-icon name="keyboard_arrow_left" />
           Previous Blocks
         </q-btn>
         <div v-else/>
-        <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextButtonHandler()">
+        <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextButtonHandler()" big>
           Next Blocks
           <q-icon name="keyboard_arrow_right" />
         </q-btn>
@@ -105,7 +105,6 @@ export default {
             for (let response of responses) {
               response.body.result.id = parseInt(response.body.result.number, 16);
               this.blocks.push(response.body);
-              console.log(response.body);
             }
             this.$nextTick(this.drawBlockchain);
           });
@@ -136,6 +135,8 @@ export default {
       var width = parseInt(svg.style("width"));
       var height = parseInt(svg.style("height"));
 
+      // Clear the svg for redraws
+      svg.selectAll("*").remove();
       var blockWidth = width / 4.7;
       var blockHeight = height / 4;
 
@@ -231,34 +232,23 @@ export default {
     },
     nextButtonHandler: function () {
       this.getNextBlocks(Math.min(this.delimiterBlocksId.head + 1, this.latestBlock - 2)).then((responses) => {
-            this.blocks = [];
-            console.log(responses);
-            for (let response of responses) {
-              response.body.result.id = parseInt(response.body.result.number, 16);
-              this.blocks.push(response.body);
-              console.log(response.body);
-            }
-            this.$nextTick(() => {
-              var svg = d3.select("#svgBC");
-              svg.selectAll("*").remove();
-              this.drawBlockchain();
-            });
-          });
+        this.blocks = [];
+        for (let response of responses) {
+          response.body.result.id = parseInt(response.body.result.number, 16);
+          this.blocks.push(response.body);
+        }
+        this.$nextTick(this.drawBlockchain);
+      });
     },
     previousButtonHandler: function() {
       this.getPreviousBlocks(Math.max(this.delimiterBlocksId.tail - 1, 2)).then((responses) => {
-            this.blocks = [];
-            for (let response of responses) {
-              response.body.result.id = parseInt(response.body.result.number, 16);
-              this.blocks.push(response.body);
-              console.log(response.body);
-            }
-            this.$nextTick(() => {
-              var svg = d3.select("#svgBC");
-              svg.selectAll("*").remove();
-              this.drawBlockchain();
-            });
-          });
+        this.blocks = [];
+        for (let response of responses) {
+          response.body.result.id = parseInt(response.body.result.number, 16);
+          this.blocks.push(response.body);
+        }
+        this.$nextTick(this.drawBlockchain);
+      });
     }
   },
   mounted: function() {
