@@ -2,21 +2,23 @@
   <div class="container row justify-center">
     <div class="message text-primary">Node {{ node.ip }} </div>
     <div class="fixed-center" style="width: 70%">
-      <svg v-if="blocks != null" class="svgBC bg-primary" id="svgBC" height="600">
-      </svg>
+      <div v-if="blocks != null">
+        <svg class="svgBC bg-primary" id="svgBC" height="600">
+        </svg>
+        <div class="row justify-between" style="max-width: 45%; margin-left: 25%">
+          <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousButtonHandler()" big>
+            <q-icon name="keyboard_arrow_left" />
+            Previous Blocks
+          </q-btn>
+          <div v-else/>
+          <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextButtonHandler()" big>
+            Next Blocks
+            <q-icon name="keyboard_arrow_right" />
+          </q-btn>
+        </div>
+      </div>
       <div v-else class="fixed-center">
         <q-spinner-ios color="red" :size="100"> </q-spinner-ios>
-      </div>
-      <div class="row justify-between" style="max-width: 45%; margin-left: 25%">
-        <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousButtonHandler()" big>
-          <q-icon name="keyboard_arrow_left" />
-          Previous Blocks
-        </q-btn>
-        <div v-else/>
-        <q-btn v-if="delimiterBlocksId.head != latestBlock" color="primary" @click="nextButtonHandler()" big>
-          Next Blocks
-          <q-icon name="keyboard_arrow_right" />
-        </q-btn>
       </div>
     </div>
     <q-modal ref="unreachableModal" v-model="nodeUnreachable" minimized>
@@ -97,15 +99,15 @@ export default {
     refreshData: function () {
       httpService.getBlockNumber(this.node.ip).then((response) => {
         let numberOfBlock = parseInt(response.data.result, 16);
-        if (numberOfBlock != this.latestBlock) {
+        if (numberOfBlock != this.latestBlock && this.delimiterBlocksId.head == this.latestBlock) {
           // A new block came in, fetch it and update the visualization.
           this.getPreviousBlocks(numberOfBlock).then((responses) => {
             this.blocks = [];
-            this.latestBlock = numberOfBlock;
             for (let response of responses) {
               response.body.result.id = parseInt(response.body.result.number, 16);
               this.blocks.push(response.body);
             }
+            this.latestBlock = numberOfBlock;
             this.$nextTick(this.drawBlockchain);
           });
         }
