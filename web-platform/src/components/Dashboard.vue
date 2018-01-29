@@ -22,6 +22,10 @@
           <q-item-side icon="dns" />
           <q-item-main label="Network" sublabel="Visualize Architecture" />
         </q-side-link>
+        <q-side-link item to="/smartcontracts">
+          <q-item-side icon="description"/>
+          <q-item-main label="Smart Contracts" sublabel="Explore your Smart Contracts"/>
+        </q-side-link>
       </div>
     </div>
 
