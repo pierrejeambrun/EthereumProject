@@ -86,6 +86,7 @@ Start by pasting your smart contract in the code edition window.
 If your code has no warnings you are ready to go.
 
 In the top-right corner, select ```Run``` then ```Environment```, ```Web3Provider```. Type the url and port towards your ethereum node.
+
 Be careful though, you might need to connect to the solidity-browser interface via http, and not https !
 
 
