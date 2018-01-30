@@ -78,7 +78,6 @@ geth --nodiscover --datadir data/db --networkid 15 --rpc --rpcapi personal,web3,
 
 You are ready to go !
 
-
 ### III Interact with a smart contract using Solidity Browser
 
 Start by pasting your smart contract in the code edition window.
@@ -107,4 +106,3 @@ personal.unlockAccount('youraccount', 'password', duration)
 
 Duration should be the time of unlocking in second. You can then go back to solidity-browser, and create your smart contract for good.
 When it is mined, an interface to interact with it should appear on the bottom-right.
-
