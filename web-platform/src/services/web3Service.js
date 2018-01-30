@@ -32,6 +32,5 @@ export default {
     }, 1);
     console.log(output.contracts);
     return output;
-
   }
 }
