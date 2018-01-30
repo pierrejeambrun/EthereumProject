@@ -77,3 +77,33 @@ geth --nodiscover --datadir data/db --networkid 15 --rpc --rpcapi personal,web3,
 ```
 
 You are ready to go !
+
+
+### III Interact with a smart contract using Solidity Browser
+
+Start by pasting your smart contract in the code edition window.
+
+If your code has no warnings you are ready to go.
+
+In the top-right corner, select ```Run``` then ```Environment```, ```Web3Provider```. Type the url and port towards your ethereum node.
+Be careful though, you might need to connect to the solidity-browser interface via http, and not https !
+
+
+Once the connection is made, you should see your blockchain accounts in the ```Accounts``` list. Select the account you want to pay for the mining and click on ```Create```.
+
+The console will indicate when the mining is successful, or if you need to unlock that account.
+If you need to unlock your account, go to your geth console : 
+
+```bash
+geth attach $datadir/geth.ipc
+``` 
+
+on your node, and type 
+
+```javascript
+personal.unlockAccount('youraccount', 'password', duration)
+```
+
+Duration should be the time of unlocking in second. You can then go back to solidity-browser, and create your smart contract for good.
+When it is mined, an interface to interact with it should appear on the bottom-right.
+
