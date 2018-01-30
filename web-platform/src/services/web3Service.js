@@ -20,11 +20,18 @@ export default {
       id: 2
     }
   },
-  sendContract(jsonInterface) {
-    console.log("I'm in the service and I'm ok");
-    console.log(jsonInterface);
-    //let new_SC =  web3.eth.contract(jsonInterface);
-    //this.smart_contracts.push(new_SC);
-    //return new_SC;
+  //Compile une string et renvoie l'objet smart contract compilé prêt à l'utilisation
+  compile(code){
+    var output=solc.compileStandardWrapper({
+      sources : {
+        "mycontract":
+          {
+            content: code
+          }
+      }
+    }, 1);
+    console.log(output.contracts);
+    return output;
+
   }
 }
