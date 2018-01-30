@@ -21,6 +21,7 @@ export default new VueRouter({
         { path: 'blockchain', component: load('blockchain-components/MainBlockchain') },
         { path: 'smartcontracts', component: load('blockchain-components/MainSmartContract') },
         { path : 'smartcontracts/new', component:load('blockchain-components/CreateSmartContract')},
+        { path: 'transactions', component:load('blockchain-components/SendTransaction')}
       ],
     },
     { path: '*', component: load('Error404') }
