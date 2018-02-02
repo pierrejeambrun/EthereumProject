@@ -1,6 +1,6 @@
 <template>
   <div class="justify-center flex">
-    <div class="row" style="width:30%">
+    <div class="row" style="width:25%">
       <div style="width: 100%">
         <q-select
           float-label="Sender"
@@ -13,11 +13,11 @@
           :options="accountList"
         />
         <q-input v-model="amount" type="number" float-label="Amount"/>
-        <q-input v-model="gas" type="number" float-label="Gas Amount"/>
+        <q-input v-model="gas" type="number" float-label="Gas"/>
         <q-input v-model="password" type="password" float-label="Password" />
         <div class="row justify-between">
-          <q-btn color="primary" @click="gasEstimate(node.ip, sender, receiver, amount)">Gas Estimate</q-btn>
-          <q-btn color="primary" @click="sendTransaction(node.ip, sender, receiver, amount, gas, password)">Send the transaction</q-btn>
+          <q-btn color="primary" @click="gasEstimate()">Estimate</q-btn>
+          <q-btn color="primary" @click="sendTransaction()">Send</q-btn>
         </div>
       </div>
     </div>
@@ -58,15 +58,15 @@
           this.accountList = temp;
         })
       },
-      gasEstimate: function(ip, sender, receiver, amount) {
-        httpService.gasEstimate(ip, sender, receiver, amount).then((response)=>{
-          let amount=response.body.result;
-          Alert.create({ html: 'You need to send ' + parseInt(amount, 16) + ' Gas to mine your transaction !', color:'primary' });
+      gasEstimate: function() {
+        httpService.gasEstimate(this.node.ip, this.sender, this.receiver, this.amount).then((response)=>{
+          let gasEstimate = parseInt(response.body.result);
+          Alert.create({ html: 'You need to send ' + gasEstimate + ' Gas to mine your transaction !', color:'primary' });
         });
       },
-      sendTransaction: function(ip, sender, receiver, amount, gas, password) {
-        httpService.sendMoney(ip, sender, receiver, amount, gas, 1, password).then((response) => {
-          let transactionHash= response.body.result;
+      sendTransaction: function() {
+        httpService.sendMoney(this.node.ip, this.sender, this.receiver, this.amount, this.gas, 1, this.password).then((response) => {
+          let transactionHash = response.body.result;
           Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
         }, (error) => {
           Alert.create({ html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });

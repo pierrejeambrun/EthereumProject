@@ -58,7 +58,7 @@ export default {
     return this.http.post('http://' + ipAddress + ":8545", data);
   },
   gasEstimate(ipAddress, fromAddress, toAddress, value) {
-    params = {
+    let params = {
       from: fromAddress,
       to: toAddress,
       value: this.formatHex(value)
@@ -71,7 +71,7 @@ export default {
     return this.http.post('http://' + ipAddress + ":8545", data);
   },
   sendMoney(ipAddress, fromAddress, toAddress, value, gas, gasPrice, password) {
-    params = {
+    let params = {
       from: fromAddress,
       to: toAddress,
       value: this.formatHex(value),
