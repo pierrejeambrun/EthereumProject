@@ -1,5 +1,5 @@
 <template>
-  <div class="container justify-center flex">
+  <div class="justify-center flex">
     <div class="row">
       <div class="column">
         <q-select
@@ -24,27 +24,31 @@
   </div>
 </template>
 
-<script>
+<script type="text/javascript">
   import httpService from "../../services/httpService";
-  import {QSelect, QInput, QBtn, Alert} from "quasar";
+  import { QSelect, QInput, QBtn, Alert } from "quasar";
 
   export default {
     name: "send-transaction",
-    components:{QSelect, QInput, QBtn, Alert},
+    components:{
+      QSelect,
+      QInput,
+      QBtn,
+      Alert
+    },
     data: function(){
       return {
-        node:{ip:"192.168.72.103"},
-        sender:null,
-        receiver:null,
-        amount:null,
-        gas:null,
-        password:null,
-        accountList:[]
+        node: this.$store.state.selectedNode,
+        sender: null,
+        receiver: null,
+        amount: null,
+        gas: null,
+        password: null,
+        accountList: []
       }
     },
-    computed:{},
-    methods:{
-      createdListAccounts:function(){
+    methods: {
+      createdListAccounts: function() {
         httpService.listAccounts(this.node.ip).then((response)=> {
           let rawAccounts = response.body.result;
           let temp = [];
@@ -54,30 +58,29 @@
           this.accountList = temp;
         })
       },
-      gasEstimate: function(ip, sender,receiver, amount){
+      gasEstimate: function(ip, sender,receiver, amount) {
         httpService.gasEstimate(ip,sender,receiver, amount).then((response)=>{
           let amount=response.body.result;
           Alert.create({html: 'You need to send ' + parseInt(amount, 16) + ' Gas to mine your transaction !', color:'primary'})
         });
       },
-      sendTransaction: function(ip,sender, receiver,amount,gas, password){
-        httpService.sentMoney(ip,sender,receiver,amount,gas, 1, password).then((response)=>{
+      sendTransaction: function(ip,sender, receiver,amount,gas, password) {
+        httpService.sentMoney(ip,sender,receiver,amount,gas, 1, password).then((response) => {
           let transactionHash= response.body.result;
           if (transactionHash){
             Alert.create({html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary'})
           } else {
             Alert.create({html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working'})
-
           }
         });
       }
     },
-    beforeMount(){
+    beforeMount() {
       this.createdListAccounts();
     }
   }
 </script>
 
-<style scoped>
+<style lang="stylus">
 
 </style>
