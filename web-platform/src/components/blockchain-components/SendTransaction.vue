@@ -1,6 +1,6 @@
 <template>
   <div class="justify-center flex">
-    <div class="row" style="width:40%">
+    <div class="row" style="width:30%">
       <div style="width: 100%">
         <q-select
           float-label="Sender"
@@ -59,13 +59,13 @@
         })
       },
       gasEstimate: function(ip, sender, receiver, amount) {
-        httpService.gasEstimate(ip,sender,receiver, amount).then((response)=>{
+        httpService.gasEstimate(ip, sender, receiver, amount).then((response)=>{
           let amount=response.body.result;
           Alert.create({ html: 'You need to send ' + parseInt(amount, 16) + ' Gas to mine your transaction !', color:'primary' });
         });
       },
       sendTransaction: function(ip, sender, receiver, amount, gas, password) {
-        httpService.sendMoney(ip,sender,receiver,amount,gas, 1, password).then((response) => {
+        httpService.sendMoney(ip, sender, receiver, amount, gas, 1, password).then((response) => {
           let transactionHash= response.body.result;
           Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
         }, (error) => {
