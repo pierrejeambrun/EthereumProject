@@ -70,7 +70,7 @@ export default {
     var data = this.prepareRequestBody("personal_listAccounts", []);
     return this.http.post('http://' + ipAddress + ":8545", data);
   },
-  sentMoney(ipAddress, fromAddress, toAddress, value, gas, gasPrice, password) {
+  sendMoney(ipAddress, fromAddress, toAddress, value, gas, gasPrice, password) {
     params = {
       from: fromAddress,
       to: toAddress,

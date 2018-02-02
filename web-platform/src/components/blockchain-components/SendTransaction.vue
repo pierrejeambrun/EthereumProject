@@ -1,7 +1,7 @@
 <template>
   <div class="justify-center flex">
-    <div class="row">
-      <div class="column">
+    <div class="row" style="width:40%">
+      <div style="width: 100%">
         <q-select
           float-label="Sender"
           v-model="sender"
@@ -58,20 +58,18 @@
           this.accountList = temp;
         })
       },
-      gasEstimate: function(ip, sender,receiver, amount) {
+      gasEstimate: function(ip, sender, receiver, amount) {
         httpService.gasEstimate(ip,sender,receiver, amount).then((response)=>{
           let amount=response.body.result;
-          Alert.create({html: 'You need to send ' + parseInt(amount, 16) + ' Gas to mine your transaction !', color:'primary'})
+          Alert.create({ html: 'You need to send ' + parseInt(amount, 16) + ' Gas to mine your transaction !', color:'primary' });
         });
       },
-      sendTransaction: function(ip,sender, receiver,amount,gas, password) {
-        httpService.sentMoney(ip,sender,receiver,amount,gas, 1, password).then((response) => {
+      sendTransaction: function(ip, sender, receiver, amount, gas, password) {
+        httpService.sendMoney(ip,sender,receiver,amount,gas, 1, password).then((response) => {
           let transactionHash= response.body.result;
-          if (transactionHash){
-            Alert.create({html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary'})
-          } else {
-            Alert.create({html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working'})
-          }
+          Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
+        }, (error) => {
+          Alert.create({ html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });
         });
       }
     },
