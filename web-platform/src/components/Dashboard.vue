@@ -24,7 +24,7 @@
         </q-side-link>
         <q-side-link item to="/transactions">
           <q-item-side icon="compare_arrows"/>
-          <q-item-main label="Envoi de transaction" sublabel="Send Transactions !"/>
+          <q-item-main label="Transactions" sublabel="Send Money to other accounts"/>
         </q-side-link>
         <q-side-link item to="/smartcontracts">
           <q-item-side icon="description"/>
