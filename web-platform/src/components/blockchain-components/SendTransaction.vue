@@ -64,7 +64,8 @@
         amount: null,
         gas: null,
         password: null,
-        accountList: []
+        accountList: [],
+        alert: null,
       }
     },
     methods: {
@@ -81,20 +82,31 @@
       gasEstimate: function() {
         httpService.gasEstimate(this.node.ip, this.sender, this.receiver, this.amount).then((response)=>{
           let gasEstimate = parseInt(response.body.result);
-          Alert.create({ html: 'You need to send ' + gasEstimate + ' Gas to mine your transaction !', color:'primary' });
+          this.clearAlerts();
+          this.alert = Alert.create({ html: 'You need to send ' + gasEstimate + ' Gas to mine your transaction !', color:'primary' });
         });
       },
       sendTransaction: function() {
         httpService.sendMoney(this.node.ip, this.sender, this.receiver, this.amount, this.gas, 1, this.password).then((response) => {
           let transactionHash = response.body.result;
-          Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
+          console.log(response);
+          this.clearAlerts();
+          this.alert = Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
         }, (error) => {
           Alert.create({ html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });
         });
+      },
+      clearAlerts: function () {
+        if (this.alert != null) {
+          this.alert.dismiss();
+        }
       }
     },
     beforeMount() {
       this.createdListAccounts();
+    },
+    destroyed() {
+      this.clearAlerts();
     }
   }
 </script>
