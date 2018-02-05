@@ -39,6 +39,9 @@
         <img src="~assets/ethereum_coin.jpg">
         <q-card-title slot="overlay">
           Account Balance
+          <div slot="right" class="row items-center">
+            <q-icon name="account balance" /> Balance
+          </div>
         </q-card-title>
       </q-card-media>
       <q-card-main style="overflow: auto">
