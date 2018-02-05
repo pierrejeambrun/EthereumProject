@@ -1,6 +1,6 @@
 <template>
-  <div class="justify-center fixed-center flex" style="width: 25%">
-    <q-card inline style="width: 100%; background-color: white">
+  <div class="justify-center flex" style="width: 70%; margin-left: 15%">
+    <q-card inline style="width: 45%; background-color: white">
       <q-card-media overlay-position="bottom">
         <img src="~assets/ethereum_coin.jpg">
         <q-card-title slot="overlay">
@@ -33,7 +33,31 @@
           </div>
         </div>
       </q-card-main>
-</q-card>
+    </q-card>
+    <q-card inline style="width: 45%; background-color: white;">
+      <q-card-media overlay-position="bottom">
+        <img src="~assets/ethereum_coin.jpg">
+        <q-card-title slot="overlay">
+          Account Balance
+        </q-card-title>
+      </q-card-media>
+      <q-card-main style="overflow: auto">
+       <table class="q-table horizontal-separator loose">
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(value, key) in balances">
+              <td class="text-left" data-th="Account">{{ key }}</td>
+              <td class="text-left" data-th="Balance">{{ value }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </q-card-main>
+    </q-card>
   </div>
 </template>
 
@@ -66,6 +90,8 @@
         password: null,
         accountList: [],
         alert: null,
+        balances: {},
+        timer: null
       }
     },
     methods: {
@@ -77,11 +103,12 @@
             temp.push({value: account, label: account});
           }
           this.accountList = temp;
-        })
+          this.fetchBalances();
+        });
       },
       gasEstimate: function() {
         httpService.gasEstimate(this.node.ip, this.sender, this.receiver, this.amount).then((response)=>{
-          let gasEstimate = parseInt(response.body.result);
+          let gasEstimate = parseInt(response.body.result, 16);
           this.clearAlerts();
           this.alert = Alert.create({ html: 'You need to send ' + gasEstimate + ' Gas to mine your transaction !', color:'primary' });
         });
@@ -89,7 +116,6 @@
       sendTransaction: function() {
         httpService.sendMoney(this.node.ip, this.sender, this.receiver, this.amount, this.gas, 1, this.password).then((response) => {
           let transactionHash = response.body.result;
-          console.log(response);
           this.clearAlerts();
           this.alert = Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
         }, (error) => {
@@ -100,13 +126,26 @@
         if (this.alert != null) {
           this.alert.dismiss();
         }
+      },
+      fetchBalances: function() {
+        console.log("Fetching balances");
+        for (let account of this.accountList) {
+          httpService.getBalance(this.node.ip, account.value, null).then((response) => {
+            this.balances[account.value] = parseInt(response.body.result, 16);
+            this.$forceUpdate();
+          });
+        }
       }
     },
     beforeMount() {
       this.createdListAccounts();
+      if (this.timer == null) {
+        this.timer = setInterval(() => this.fetchBalances(), 2000);
+      }
     },
     destroyed() {
       this.clearAlerts();
+      clearInterval(this.timer);
     }
   }
 </script>
