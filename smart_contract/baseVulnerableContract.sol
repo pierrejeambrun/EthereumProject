@@ -38,8 +38,21 @@ contract vulnerableContract {
             //Delegate call to some library
             yesItWasCalled();
             //Below commented is call to canIReachThis method of the librairy which fires an event
-            _library.delegatecall(keccak256("canIReachThis()"));
-            //_library.delegatecall(msg.data);
+            //_library.delegatecall(keccak256("canIReachThis()"));
+            _library.delegatecall(msg.data);
         }
     } 
+}
+
+/**********
+ Intermediary created only for testing in solidity browser and the Javascript VM.
+ Do not use in environments with blockchain running. For that use your console to send transactions.
+***********/
+
+contract intermediary {
+    address constant _myContract = 0xdc04977a2078c8ffdf086d618d1f961b6c546222;
+    
+    function sendDataToPayable(string _data) public returns (bool) {
+        _myContract.delegatecall(keccak256(_data));
+    }
 }
