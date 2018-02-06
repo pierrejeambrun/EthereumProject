@@ -3,14 +3,11 @@ pragma solidity ^0.4.0;
 /**********
  This is the base for a vulnerable contract as was HackParity.
  A contract, a library and a payable method that delegates call to the library any method that is not matched
+ To use delegateCall, the library address must be hardcoded
 ***********/
 
-library _library {
-    struct Data { mapping(uint => bool) flags; }
-}
-
 contract vulnerableContract {
-    using _library for _library.Data;
+    address constant _library = 0xcafecafecafecafecafecafecafecafecafecafe;
   
     // gets called when no other function matches
     function() payable {
