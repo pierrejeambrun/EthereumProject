@@ -133,7 +133,7 @@
       fetchBalances: function() {
         console.log("Fetching balances");
         for (let account of this.accountList) {
-          httpService.getBalance(this.node.ip, account.value, null).then((response) => {
+          httpService.getBalance(this.node.ip, account.value, "latest").then((response) => {
             this.balances[account.value] = parseInt(response.body.result, 16);
             this.$forceUpdate();
           });
