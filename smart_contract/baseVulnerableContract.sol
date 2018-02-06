@@ -8,6 +8,11 @@ pragma solidity ^0.4.0;
 
 contract TestLibrary {
     event reached();
+    event reachedInit(address);
+    
+    function init(address owner) public {
+        reachedInit(owner);
+    }
     
     function canIReachThis() public {
        reached();
@@ -15,13 +20,31 @@ contract TestLibrary {
     }
 }
 
-contract vulnerableContract {
-    //Ici mettre l'adresse de la librairie minée au préalable
-    address constant _library = 0x692a70d2e424a56d2c6c27aa97d1a86395877b3a;
-    
+contract VulnerableContract {
+    event tryInit(address);
+    //Declaration of the event that will be used.
     event yesItWasCalled();
 
-
+    //Ici mettre l'adresse de la librairie minée au préalable
+    address constant _library = 0x35ef07393b57464e93deb59175ff72e6499450cf;
+    
+    address _owner;
+    
+    function formatFName(string fName) private returns (bytes32) {
+        bytes32 result = keccak256(fName);
+        return result;
+    }
+    
+    function VulnerableContract() public {
+        tryInit(msg.sender);
+        //TODO => Problem here : doesn't transmit the good owner to the function 
+        _library.delegatecall(formatFName("init(address)"), msg.sender);
+    }
+    
+    function getOwner() view public returns (address) {
+        return _owner;
+    }
+    
     function getAddressLib() pure public returns (address) {
         return _library;    
     }
@@ -37,7 +60,7 @@ contract vulnerableContract {
         else if (msg.data.length > 0) {
             //Delegate call to some library
             yesItWasCalled();
-            //Below commented is call to canIReachThis method of the librairy which fires an event
+            //Below commented is call to canIReachThis method of the librairy which fires an event and later will do the logic.
             //_library.delegatecall(keccak256("canIReachThis()"));
             _library.delegatecall(msg.data);
         }
