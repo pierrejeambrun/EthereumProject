@@ -7,11 +7,15 @@ pragma solidity ^0.4.0;
 ***********/
 
 contract TestLibrary {
+    
+    address _owner;
+    
     event reached();
     event reachedInit(address);
     
-    function init(address owner) public {
-        reachedInit(owner);
+    function init(address _from) public {
+        reachedInit(_from);
+        //this._owner = _from;
     }
     
     function canIReachThis() public {
@@ -26,18 +30,24 @@ contract VulnerableContract {
     event yesItWasCalled();
 
     //Ici mettre l'adresse de la librairie minée au préalable
-    address constant _library = 0x35ef07393b57464e93deb59175ff72e6499450cf;
+    address constant _library = 0x0dcd2f752394c41875e259e00bb44fd505297caf;
     
-    address _owner;
+    address _owner ;
     
     function formatFName(string fName) private returns (bytes32) {
         bytes32 result = keccak256(fName);
+        //Call byte4 pour tronquer le hash, sinon les params sont modifiés
+        return bytes4(result);
+    }
+    
+    function formatAddress(address fAddr) private returns (bytes32) {
+        bytes32 result = keccak256(fAddr);
         return result;
     }
     
+    //Constructor of the wallet. Delegates the initialisation of _owner to the library
     function VulnerableContract() public {
         tryInit(msg.sender);
-        //TODO => Problem here : doesn't transmit the good owner to the function 
         _library.delegatecall(formatFName("init(address)"), msg.sender);
     }
     
