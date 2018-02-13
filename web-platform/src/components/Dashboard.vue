@@ -23,7 +23,7 @@
           <q-item-main label="Network" sublabel="Visualize Architecture"/>
         </q-side-link>
         <q-side-link item to="/money_transaction">
-          <q-item-side icon="compare_arrows"/>
+          <q-item-side icon="monetization_on"/>
           <q-item-main label="Money" sublabel="Send Money to other accounts"/>
         </q-side-link>
         <q-side-link item to="/data_transaction">

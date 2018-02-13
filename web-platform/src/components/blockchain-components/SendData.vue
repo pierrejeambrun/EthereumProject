@@ -1,10 +1,10 @@
 <template>
   <div class="justify-center flex" style="width: 70%; margin-left: 15%">
-    <q-card inline style="width: 50%; background-color: white">
+    <q-card inline style="width: 45%; background-color: white">
       <q-card-media overlay-position="bottom">
         <img src="~assets/solidity_data.png">
         <q-card-title slot="overlay">
-          Call SC
+          Call a Smart Contract
           <div slot="right" class="row items-center" style="color: white">
             <q-icon name="compare_arrows" /> Send Data
           </div>
@@ -56,7 +56,7 @@
       QIcon,
       QCardMedia
     },
-    data: function(){
+    data: function() {
       return {
         node: this.$store.state.selectedNode,
         sender: null,

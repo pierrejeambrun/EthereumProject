@@ -5,8 +5,8 @@
         <img src="~assets/ethereum_coin.jpg">
         <q-card-title slot="overlay">
           Transaction
-          <div slot="right" class="row items-center">
-            <q-icon name="compare_arrows" /> Send Money
+          <div slot="right" class="row items-center" style="color: white">
+            <q-icon name="monetization_on" /> Send Money
           </div>
         </q-card-title>
       </q-card-media>
@@ -39,7 +39,7 @@
         <img src="~assets/ethereum_coin.jpg">
         <q-card-title slot="overlay">
           Account Balance
-          <div slot="right" class="row items-center">
+          <div slot="right" class="row items-center" style="color: white">
             <q-icon name="account balance" /> Balance
           </div>
         </q-card-title>
@@ -83,7 +83,7 @@
       QIcon,
       QCardMedia
     },
-    data: function(){
+    data: function() {
       return {
         node: this.$store.state.selectedNode,
         sender: null,
