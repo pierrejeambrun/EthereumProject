@@ -69,7 +69,7 @@
   import { QSelect, QInput, QBtn, Alert, QCard, QCardTitle, QCardSeparator, QCardMain, QCardActions, QIcon, QCardMedia } from "quasar";
 
   export default {
-    name: "send-transaction",
+    name: "send-money",
     components:{
       QSelect,
       QInput,
