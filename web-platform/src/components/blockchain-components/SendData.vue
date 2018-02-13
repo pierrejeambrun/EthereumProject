@@ -18,11 +18,7 @@
               v-model="sender"
               :options="accountList"
             />
-            <q-select
-              float-label="Receiver"
-              v-model="receiver"
-              :options="accountList"
-            />
+            <q-input v-model="receiver" type="text" float-label="Receiver"/>
             <q-input v-model="data" type="text" float-label="Data"/>
             <q-input v-model="gas" type="number" float-label="Gas"/>
             <q-input v-model="password" type="password" float-label="Password" />
