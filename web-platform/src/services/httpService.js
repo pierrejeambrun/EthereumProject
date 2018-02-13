@@ -66,6 +66,15 @@ export default {
     var data = this.prepareRequestBody("eth_estimateGas", [params]);
     return this.http.post('http://' + ipAddress + ":8545", data);
   },
+  gasEstimateData(ipAddress, fromAddress, toAddress, dataEncoded) {
+    let params = {
+      from: fromAddress,
+      to: toAddress,
+      data: dataEncoded
+    }
+    var data = this.prepareRequestBody("eth_estimateGas", [params]);
+    return this.http.post('http://' + ipAddress + ":8545", data);
+  },
   listAccounts(ipAddress) {
     var data = this.prepareRequestBody("personal_listAccounts", []);
     return this.http.post('http://' + ipAddress + ":8545", data);
@@ -75,6 +84,17 @@ export default {
       from: fromAddress,
       to: toAddress,
       value: this.formatHex(value),
+      gas: this.formatHex(gas),
+      gasPrice: this.formatHex(gasPrice)
+    }
+    var data = this.prepareRequestBody("personal_sendTransaction", [params, password]);
+    return this.http.post('http://' + ipAddress + ":8545", data);
+  },
+  contactSmartContract(ipAddress, fromAddress, toAddress, dataEncoded, gas, gasPrice, password) {
+    let params = {
+      from: fromAddress,
+      to: toAddress,
+      data: dataEncoded,
       gas: this.formatHex(gas),
       gasPrice: this.formatHex(gasPrice)
     }

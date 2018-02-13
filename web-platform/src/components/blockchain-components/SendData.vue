@@ -23,7 +23,7 @@
               v-model="receiver"
               :options="accountList"
             />
-            <q-input v-model="data" type="number" float-label="Data"/>
+            <q-input v-model="data" type="text" float-label="Data"/>
             <q-input v-model="gas" type="number" float-label="Gas"/>
             <q-input v-model="password" type="password" float-label="Password" />
             <div class="row justify-between">
@@ -78,21 +78,21 @@
             temp.push({value: account, label: account});
           }
           this.accountList = temp;
-          this.fetchBalances();
         });
       },
       gasEstimate: function() {
-        httpService.gasEstimate(this.node.ip, this.sender, this.receiver, this.data).then((response)=>{
+        httpService.gasEstimateData(this.node.ip, this.sender, this.receiver, this.data).then((response)=>{
           let gasEstimate = parseInt(response.body.result, 16);
           this.clearAlerts();
           this.alert = Alert.create({ html: 'You need to send ' + gasEstimate + ' Gas to mine your transaction !', color:'primary' });
         });
       },
       sendTransaction: function() {
-        httpService.sendMoney(this.node.ip, this.sender, this.receiver, this.data, this.gas, 1, this.password).then((response) => {
+        httpService.contactSmartContract(this.node.ip, this.sender, this.receiver, this.data, this.gas, 1, this.password).then((response) => {
           let transactionHash = response.body.result;
           this.clearAlerts();
           this.alert = Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
+          console.log(response);
         }, (error) => {
           Alert.create({ html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });
         });
