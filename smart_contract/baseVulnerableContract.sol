@@ -32,7 +32,7 @@ contract VulnerableContract {
     event tryInit(address);
 
     //Ici mettre l'adresse de la librairie minée au préalable
-    address constant _library = 0x0fdf4894a3b7c5a101686829063be52ad45bcfb7;
+    address constant _library = 0x5e72914535f202659083db3a02c984188fa26e9f;
     
     address public _owner;
     
@@ -71,15 +71,15 @@ contract VulnerableContract {
 ***********/
 
 contract intermediary {
-    address constant _myContract = 0x1439818dd11823c45fff01af0cd6c50934e27ac0;
+    address constant _myContract = 0x1df11fca869524326dad2937ae8398e2296bda71;
     address public _owner;
     address ownerToTest = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
     
     function sendDataToPayable(string _data) public returns (bool) {
         if (keccak256(_data) == keccak256("init(address)")) {
-                _myContract.delegatecall(bytes4(keccak256(_data)), ownerToTest);
+                return _myContract.call(bytes4(keccak256(_data)), ownerToTest);
         } else {
-                _myContract.delegatecall(keccak256(_data));
+                return _myContract.call(keccak256(_data));
         }
     }
 }
