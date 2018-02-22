@@ -30,12 +30,23 @@ contract VulnerableContract {
     
     //Event called when trying to Init the smart contract    
     event tryInit(address);
+    
+    //Event called when someone that is not the owner tries to send Money to someone else
+    event tryCheating(address);
+    
+    //Event called when the owner wants to send money
+    event ownerWantsToSendMoney();
 
     //Ici mettre l'adresse de la librairie minée au préalable
-    address constant _library = 0xcac3f0403895fadae1c5cb2f9cb5fb0fbda62a37;
+    address constant _library = 0xe5ec6cccb73824f738d3bcc6e11d6b7e07632436;
     
+    
+    //Ici si on définit _me avant owner, tout bug !!!!! Nouvelle vuln à inspecter??? Mauvaise compréhension des variables??? A voir !!
     address public _owner;
-    
+    address private _me = this;
+
+
+
     function formatFSig(string fSig) private returns (bytes4) {
         bytes32 result = keccak256(fSig);
         //Call byte4 pour tronquer le hash, sinon les params sont modifiés
@@ -53,12 +64,17 @@ contract VulnerableContract {
     }
     
     function getBalance() view returns (uint256){
-        return this.balance;
+        return _me.balance;
     }
     
-    function pay() payable public returns (bool) {
-        address _me = this;
-        return _me.send(msg.value);
+    function sendMoney(address _to, uint256 _amount) payable public returns (bool) {
+        if (msg.sender != _owner) {
+            tryCheating(msg.sender);
+            return false;
+        } else {
+            ownerWantsToSendMoney();
+            return _to.send(_amount);
+        }
     }
     
     // gets called when no other function matches
@@ -66,6 +82,7 @@ contract VulnerableContract {
         //If I get sent some cash (wallet logic)
         if (msg.value > 0) {
             //Do something
+            _me.send(msg.value);
         }
         else if (msg.data.length > 0) {
             //Delegate call to some library
