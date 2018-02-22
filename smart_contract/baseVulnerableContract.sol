@@ -32,7 +32,7 @@ contract VulnerableContract {
     event tryInit(address);
 
     //Ici mettre l'adresse de la librairie minée au préalable
-    address constant _library = 0x5e72914535f202659083db3a02c984188fa26e9f;
+    address constant _library = 0xcac3f0403895fadae1c5cb2f9cb5fb0fbda62a37;
     
     address public _owner;
     
@@ -50,6 +50,15 @@ contract VulnerableContract {
     
     function getAddressLib() pure public returns (address) {
         return _library;    
+    }
+    
+    function getBalance() view returns (uint256){
+        return this.balance;
+    }
+    
+    function pay() payable public returns (bool) {
+        address _me = this;
+        return _me.send(msg.value);
     }
     
     // gets called when no other function matches
