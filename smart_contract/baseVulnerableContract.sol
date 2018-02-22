@@ -32,7 +32,7 @@ contract VulnerableContract {
     event tryInit(address);
     
     //Event called when someone that is not the owner tries to send Money to someone else
-    event tryCheating(address);
+    event triedCheating(address);
     
     //Event called when the owner wants to send money
     event ownerWantsToSendMoney();
@@ -59,17 +59,21 @@ contract VulnerableContract {
         _library.delegatecall(formatFSig("init(address)"), msg.sender);
     }
     
+    //Getter for the address of the TestLibrary
     function getAddressLib() pure public returns (address) {
         return _library;    
     }
     
+    //Getter for the balance of the account associated with the smart contract
     function getBalance() view returns (uint256){
         return _me.balance;
     }
     
+    //Function sendMoney with funds located on the smart contract.
+    //Pass parameters between quotes in remix, for example : "0x14723a09acff6d2a60dcdf7aa4aff308fddc160c", "1000000000000000000"
     function sendMoney(address _to, uint256 _amount) payable public returns (bool) {
         if (msg.sender != _owner) {
-            tryCheating(msg.sender);
+            triedCheating(msg.sender);
             return false;
         } else {
             ownerWantsToSendMoney();
