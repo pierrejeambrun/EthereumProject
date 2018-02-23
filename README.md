@@ -133,7 +133,7 @@ To hack it and change its owner, format a transaction like following :
     "data": "0x19ab453c000000000000000000000000<newOwnerAddress>", 
     "gas":"0x5ee0d",
     "gasprice":"0x1"}],
-"id":<any int>}
+"id":"<any int>"}
 ```
 
 Care with the gas. A gas estimate will only compute how much gas you need to send the transaction, not how much you need to execute the smart contract function. 300000 gas is a good start.
