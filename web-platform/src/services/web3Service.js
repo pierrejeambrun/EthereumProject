@@ -9,13 +9,6 @@ export default {
     var ABI = require("../../../smart_contract/baseVulnerableContract.json");
     var contract = web3.eth.contract(ABI);
     contract = contract.at(contractAddress);
-    console.log(contract);
-    contract._owner(function(error, result) {
-      if (!error) {
-        console.log(result);
-      } else {
-        console.log(error);
-      }
-    });
+    return contract;
   }
 }

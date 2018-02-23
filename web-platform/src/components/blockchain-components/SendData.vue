@@ -63,7 +63,9 @@
         password: null,
         accountList: [],
         alert: null,
-        balances: {}
+        balances: {},
+        originalOwner: "",
+        ownerEvent: null
       }
     },
     methods: {
@@ -87,12 +89,12 @@
       sendTransaction: function() {
         httpService.contactSmartContract(this.node.ip, this.sender, this.receiver, this.data, this.gas, 1, this.password).then((response) => {
           let transactionHash = response.body.result;
-          console.log(this.data);
           this.clearAlerts();
-          this.alert = Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
+          this.alert = Alert.create({ html: 'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
           console.log(response);
         }, (error) => {
-          Alert.create({ html:'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });
+          this.clearAlerts();
+          this.alert = Alert.create({ html: 'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });
         });
       },
       clearAlerts: function () {
@@ -104,7 +106,24 @@
         if (this.receiver == null || this.receiver == "") {
           return;
         }
-        web3Service.retrieveVulnerableContract(this.receiver);
+        var contract = web3Service.retrieveVulnerableContract(this.receiver);
+        contract._owner((error, result) => {
+          if (!error) {
+            this.originalOwner = result;
+          } else {
+            this.clearAlerts();
+            this.alert = Alert.create({ html: 'SmartContract unreachable, please verify the Address', color:'primary' })
+          }
+        });
+        this.ownerEvent = contract.changingOwner();
+        this.ownerEvent.watch((error, result) => {
+          if (!error) {
+            this.clearAlerts();
+            let newOwner = result.args[""]
+            this.alert = Alert.create({ html: 'Owner changed from: ' + this.originalOwner + "<br>" + "to: " + newOwner, color:'primary'});
+            this.originalOwner = newOwner;
+          }
+        });
       }
     },
     beforeMount() {
@@ -112,10 +131,11 @@
     },
     destroyed() {
       this.clearAlerts();
+      this.ownerEvent = null;
     }
   }
+  //0x19ab453c000000000000000000000000ba4fde2b368a721995fe3a693789a9a7a4e0f79f
 </script>
-
 <style lang="stylus">
 
 </style>
