@@ -18,7 +18,7 @@
               v-model="sender"
               :options="accountList"
             />
-            <q-input v-model="receiver" type="text" float-label="Receiver"/>
+            <q-input v-model="receiver" @change="retrieveVulnerableContract()" type="text" float-label="Receiver"/>
             <q-input v-model="data" type="text" float-label="Data"/>
             <q-input v-model="gas" type="number" float-label="Gas"/>
             <q-input v-model="password" type="password" float-label="Password" />
@@ -36,6 +36,7 @@
 <script type="text/javascript">
   import httpService from "../../services/httpService";
   import { QSelect, QInput, QBtn, Alert, QCard, QCardTitle, QCardSeparator, QCardMain, QCardActions, QIcon, QCardMedia } from "quasar";
+  import web3Service from "../../services/web3Service";
 
   export default {
     name: "send-money",
@@ -86,6 +87,7 @@
       sendTransaction: function() {
         httpService.contactSmartContract(this.node.ip, this.sender, this.receiver, this.data, this.gas, 1, this.password).then((response) => {
           let transactionHash = response.body.result;
+          console.log(this.data);
           this.clearAlerts();
           this.alert = Alert.create({ html:'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
           console.log(response);
@@ -97,6 +99,12 @@
         if (this.alert != null) {
           this.alert.dismiss();
         }
+      },
+      retrieveVulnerableContract: function() {
+        if (this.receiver == null || this.receiver == "") {
+          return;
+        }
+        web3Service.retrieveVulnerableContract(this.receiver);
       }
     },
     beforeMount() {

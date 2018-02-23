@@ -1,36 +1,21 @@
-var Web3 =require('web3');
+var Web3 = require('web3');
 
-console.log(Web3);
+var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
 
-let web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
-
-let smart_contracts = [];
-
+var web3 = new Web3(new Web3.providers.HttpProvider("http://" + mockGraph.nodes[0].ip + ":8545"));
 
 export default {
-  init(context) {
-    this.http = context.http;
-  },
-  prepareRequestBody(method, params) {
-    return {
-      jsonrpc: "2.0",
-      method: method,
-      params: params,
-      id: 2
-    }
-  },
-  //Compile une string et renvoie l'objet smart contract compilé prêt à l'utilisation
-  compile(code){
-    var output=solc.compileStandardWrapper({
-      sources : {
-        "mycontract":
-          {
-            content: code
-          }
+  retrieveVulnerableContract(contractAddress) {
+    var ABI = require("../../../smart_contract/baseVulnerableContract.json");
+    var contract = web3.eth.contract(ABI);
+    contract = contract.at(contractAddress);
+    console.log(contract);
+    contract._owner(function(error, result) {
+      if (!error) {
+        console.log(result);
+      } else {
+        console.log(error);
       }
-    }, 1);
-    console.log(output.contracts);
-    return output;
+    });
   }
 }
