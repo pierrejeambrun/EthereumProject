@@ -23,7 +23,7 @@
             <q-input v-model="gas" type="number" float-label="Gas"/>
             <q-input v-model="password" type="password" float-label="Password" />
             <div class="row justify-between">
-              <q-btn color="primary" @click="gasEstimate()">Estimate</q-btn>
+              <div></div>
               <q-btn color="primary" @click="sendTransaction()">Send</q-btn>
             </div>
           </div>
@@ -79,13 +79,6 @@
           this.accountList = temp;
         });
       },
-      gasEstimate: function() {
-        httpService.gasEstimateData(this.node.ip, this.sender, this.receiver, this.data).then((response)=>{
-          let gasEstimate = parseInt(response.body.result, 16);
-          this.clearAlerts();
-          this.alert = Alert.create({ html: 'You need to send ' + gasEstimate + ' Gas to mine your transaction !', color:'primary' });
-        });
-      },
       sendTransaction: function() {
         httpService.contactSmartContract(this.node.ip, this.sender, this.receiver, this.data, this.gas, 1, this.password).then((response) => {
           let transactionHash = response.body.result;
@@ -120,7 +113,7 @@
           if (!error) {
             this.clearAlerts();
             let newOwner = result.args[""]
-            this.alert = Alert.create({ html: 'Owner changed from: ' + this.originalOwner + "<br>" + "to: " + newOwner, color:'primary'});
+            this.alert = Alert.create({ html: 'Owner changed from: ' + this.originalOwner + "<br>" + "to: " + newOwner });
             this.originalOwner = newOwner;
           }
         });
