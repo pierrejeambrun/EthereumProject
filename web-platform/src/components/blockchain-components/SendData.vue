@@ -18,7 +18,7 @@
               v-model="sender"
               :options="accountList"
             />
-            <q-input v-model="receiver" @change="retrieveVulnerableContract()" type="text" float-label="Receiver"/>
+            <q-input v-model="receiver" @blur="retrieveVulnerableContract()" type="text" float-label="Receiver"/>
             <q-input v-model="data" type="text" float-label="Data"/>
             <q-input v-model="gas" type="number" float-label="Gas"/>
             <q-input v-model="password" type="password" float-label="Password" />
@@ -81,10 +81,14 @@
       },
       sendTransaction: function() {
         httpService.contactSmartContract(this.node.ip, this.sender, this.receiver, this.data, this.gas, 1, this.password).then((response) => {
+          if (response.body.error) {
+            this.clearAlerts();
+            this.alert = Alert.create({ html: response.body.error.message });
+            return;
+          }
           let transactionHash = response.body.result;
           this.clearAlerts();
           this.alert = Alert.create({ html: 'Your transaction has successfully been added to the pool. Hash : ' + transactionHash, color:'primary' });
-          console.log(response);
         }, (error) => {
           this.clearAlerts();
           this.alert = Alert.create({ html: 'Your transaction could not be added to the pool. Please check you sent enough gas or that your connection is working' });
@@ -100,23 +104,28 @@
           return;
         }
         var contract = web3Service.retrieveVulnerableContract(this.receiver);
-        contract._owner((error, result) => {
-          if (!error) {
-            this.originalOwner = result;
-          } else {
-            this.clearAlerts();
-            this.alert = Alert.create({ html: 'SmartContract unreachable, please verify the Address', color:'primary' })
-          }
-        });
-        this.ownerEvent = contract.changingOwner();
-        this.ownerEvent.watch((error, result) => {
-          if (!error) {
-            this.clearAlerts();
-            let newOwner = result.args[""]
-            this.alert = Alert.create({ html: 'Owner changed from: ' + this.originalOwner + "<br>" + "to: " + newOwner });
-            this.originalOwner = newOwner;
-          }
-        });
+        try {
+          contract._owner((error, result) => {
+            if (!error) {
+              this.originalOwner = result;
+            } else {
+              this.clearAlerts();
+              this.alert = Alert.create({ html: 'Promise rejected!', color:'primary' });
+            }
+          });
+          this.ownerEvent = contract.changingOwner();
+          this.ownerEvent.watch((error, result) => {
+            if (!error) {
+              this.clearAlerts();
+              let newOwner = result.args[""]
+              this.alert = Alert.create({ html: 'Owner changed from: ' + this.originalOwner + "<br>" + "to: " + newOwner });
+              this.originalOwner = newOwner;
+            }
+          });
+        } catch (error) {
+          this.clearAlerts();
+          this.alert = Alert.create({ html: 'SmartContract unreachable, please verify the Address' });
+        }
       }
     },
     beforeMount() {
