@@ -32,6 +32,7 @@
           <q-collapsible icon="shopping_cart" label="Eth Accounts" id="element">
             <div v-for="value in accounts" style="word-break: break-all">
               {{ value }}
+              <p></p>
             </div>
           </q-collapsible>
         </q-list>
@@ -201,12 +202,17 @@
         $("#element").css("max-width", $("#elementbase").width());
       },
       fetchNodeInformation: function() {
-        httpService.listAccounts(this.selectedNode.ip).then((response, error) => {
-          if (!error) {
-            console.log(response);
-            this.accounts = response.body.result;
-          }
-        }).catch((error) => {console.log("An erorr as occured!")});
+        httpService.listAccounts(this.selectedNode.ip).then((response) => {
+          this.accounts = response.body.result;
+        }).catch((error) => {
+          console.log("An erorr as occured!")
+        });
+
+        httpService.isMining(this.selectedNode.ip).then((response) => {
+          this.isMining = response.body.result;
+        }).catch((error) => {
+          console.log("An erorr as occured!")
+        });
       }
     },
     destroyed: function() {
