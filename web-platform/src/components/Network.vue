@@ -213,6 +213,12 @@
         }).catch((error) => {
           console.log("An erorr as occured!")
         });
+
+        httpService.peers(this.selectedNode.ip).then((response) => {
+          this.peerCount = response.body.result.length;
+        }).catch((error) => {
+          console.log("An erorr as occured!")
+        });
       }
     },
     destroyed: function() {

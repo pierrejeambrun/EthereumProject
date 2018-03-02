@@ -100,5 +100,9 @@ export default {
     }
     var data = this.prepareRequestBody("personal_sendTransaction", [params, password]);
     return this.http.post('http://' + ipAddress + ":8545", data);
+  },
+  peers(ipAddress) {
+   var data = this.prepareRequestBody("admin_peers", []);
+    return this.http.post('http://' + ipAddress + ":8545", data);
   }
 }
