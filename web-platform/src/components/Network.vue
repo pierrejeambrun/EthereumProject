@@ -7,7 +7,7 @@
     </q-toolbar>
     <svg class="svg bg-primary fixed-center" id="svg1" height="600">
     </svg>
-    <q-modal ref="layoutModal" v-model="open"  @open="fixeWitdh" minimized>
+    <q-modal ref="layoutModal" v-model="open" size="fixed" @open="fixeWitdh" minimized>
       <q-toolbar>
         <q-btn flat @click="open = false ;$refs.layoutModal.close()">
           <q-icon name="keyboard_arrow_left" />
@@ -21,17 +21,18 @@
         <q-list separator>
           <q-collapsible icon="home" label="Ip Address" :sublabel="selectedNode ? selectedNode.ip : 'x.x.x.x'">
             <div>
-              PeerCount: 0x0
+              PeerCount: {{ peerCount }}
             </div>
           </q-collapsible>
-          <q-collapsible icon="perm_identity" label="Node State">
+          <q-collapsible icon="perm_identity" label="Node State" id="elementbase">
             <div>
-              Is Mining: True
+              Is Mining: {{ isMining }}
             </div>
           </q-collapsible>
           <q-collapsible icon="shopping_cart" label="Eth Accounts" id="element">
-            <div style="word-break: break-all">
-              0xd19167868388e320f09d5de3f8d5927f78bc6ce4
+            <div v-for="value in accounts" style="word-break: break-all">
+              {{ value }}
+              <p></p>
             </div>
           </q-collapsible>
         </q-list>
@@ -49,6 +50,8 @@
   import * as d3 from "d3"
   import { Node } from "structures/Nodes"
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
+  import httpService from "../services/httpService"
+
 
   var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
 
@@ -67,7 +70,10 @@
       return {
         simulation: null,
         open: false,
-        selectedNode: null
+        selectedNode: null,
+        isMining: false,
+        peerCount: 0,
+        accounts: [],
       }
     },
     mounted: function() {
@@ -122,6 +128,10 @@
           .on("end", dragended))
           .on("click", d => {
             this.selectedNode = this.graphData.nodes[d.index];
+            this.accounts = [];
+            this.isMining = false;
+            this.peerCount = 0;
+            this.fetchNodeInformation();
             this.$refs.layoutModal.open();
           });
 
@@ -189,7 +199,20 @@
         this.$router.push({ path: "/blockchain"});
       },
       fixeWitdh: function() {
-        $("#element").css("max-width", $("#element").width());
+        $("#element").css("max-width", $("#elementbase").width());
+      },
+      fetchNodeInformation: function() {
+        httpService.listAccounts(this.selectedNode.ip).then((response) => {
+          this.accounts = response.body.result;
+        }).catch((error) => {
+          console.log("An erorr as occured!")
+        });
+
+        httpService.isMining(this.selectedNode.ip).then((response) => {
+          this.isMining = response.body.result;
+        }).catch((error) => {
+          console.log("An erorr as occured!")
+        });
       }
     },
     destroyed: function() {

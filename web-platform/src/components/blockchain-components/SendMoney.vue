@@ -65,8 +65,8 @@
 </template>
 
 <script type="text/javascript">
-  import httpService from "../../services/httpService";
-  import { QSelect, QInput, QBtn, Alert, QCard, QCardTitle, QCardSeparator, QCardMain, QCardActions, QIcon, QCardMedia } from "quasar";
+  import httpService from "../../services/httpService"
+  import { QSelect, QInput, QBtn, Alert, QCard, QCardTitle, QCardSeparator, QCardMain, QCardActions, QIcon, QCardMedia } from "quasar"
 
   export default {
     name: "send-money",
