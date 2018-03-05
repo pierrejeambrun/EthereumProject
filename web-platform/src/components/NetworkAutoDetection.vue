@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-modal ref="networkDetector" minimized>
+    <q-modal ref="networkDetector" minimized @close="goBackButton">
       <q-toolbar>
         <q-btn flat @click="goBackButton()">
           <q-icon name="keyboard_arrow_left" />
@@ -10,7 +10,12 @@
         </div>
       </q-toolbar>
       <div class="layout-padding">
-        <p>helloBoloss</p>
+        <p>
+          Enter your network mask (/24)
+        </p>
+        <p>
+          <q-input v-model="mask" type="text" float-label="NetMask"/>
+        </p>
         <div class="row justify-between"
         <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
         <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
@@ -20,7 +25,7 @@
 </template>
 
 <script type="text/javascript">
-  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, } from 'quasar'
+  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QInput } from 'quasar'
 
   export default {
     name: 'presentation',
@@ -29,10 +34,12 @@
       QToolbar,
       QIcon,
       QToolbarTitle,
-      QModal
+      QModal,
+      QInput
     },
     data: function() {
       return {
+        mask: null
       }
     },
     mounted: function() {
@@ -40,7 +47,10 @@
     },
     methods: {
       goBackButton: function() {
-        
+        this.$router.push('/');
+      },
+      detectNetworkButton: function() {
+
       }
     }
   }
