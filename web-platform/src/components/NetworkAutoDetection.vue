@@ -24,6 +24,10 @@
       <div v-else class="layout-padding">
         We successfully detected the network and <br> found {{ nodes.length }} running nodes!
         The network topology is saved.
+        <p></p>
+        <div class="text-center">
+          <q-btn color="red" @click="goBackButton()">Ok</q-btn>
+        </div>
       </div>
       <q-progress :percentage="progress" color="primary" stripe animate style="height: 20px"/>
     </q-modal>
@@ -50,6 +54,7 @@
         mask: null,
         nodes: [],
         progress: 0,
+        detectionRunning: false,
         detectionOver: false
       }
     },
@@ -61,11 +66,15 @@
         this.$router.push('/');
       },
       detectNetworkButton: function() {
+        if (this.detectionRunning) {
+          return;
+        }
+        this.detectionRunning = true;
         var baseIp = this.mask.split(".").slice(0, -1).join(".");
         for (let i = 0; i <= 255; i++) {
           let currentIp = baseIp + "." + i;
             httpService.peers(currentIp).then((response) => {
-              this.nodes.push(response);
+              this.nodes.push(response.body.result);
               this.progress = this.progress + 1/256 * 100;
               if (this.progress == 100) {
                 this.detectionOver = true;
@@ -81,7 +90,26 @@
         }
       },
       createNetwork: function() {
-        console.log(this.nodes);
+        let graph = {
+          nodes: [],
+          links: []
+        };
+        for (let i  = 0; i < this.nodes.length; i++) {
+          var relations = this.nodes[i];
+          graph.nodes.push({
+            id: i,
+            group: i,
+            ip: relations[0].network.localAddress.split(":")[0]
+          });
+          for (let relation of relations) {
+            graph.links.push({
+              source: relation.network.localAddress.split(":")[0],
+              target: relation.network.remoteAddress.split(":")[0]
+            });
+          }
+        }
+      console.log(graph);
+      this.detectionRunning = false;
       }
     }
   }
