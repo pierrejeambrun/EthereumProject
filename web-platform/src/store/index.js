@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
+var mockGraph = require("../assets/data/blockChainNodes.json");
 
 const store = new Vuex.Store({
   state: {

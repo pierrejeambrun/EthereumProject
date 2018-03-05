@@ -1,6 +1,6 @@
 var Web3 = require('web3');
 
-var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
+var mockGraph = require("../assets/data/blockChainNodes.json");
 
 var web3 = new Web3(new Web3.providers.HttpProvider("http://" + mockGraph.nodes[0].ip + ":8545"));
 

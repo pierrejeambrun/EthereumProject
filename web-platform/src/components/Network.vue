@@ -53,7 +53,7 @@
   import httpService from "../services/httpService"
 
 
-  var mockGraph = require("../assets/data/mock/mockBlockChainNodes.json");
+  var mockGraph = require("../assets/data/blockChainNodes.json");
 
   export default {
     name: "network",
