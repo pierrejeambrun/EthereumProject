@@ -21,7 +21,8 @@ export default new VueRouter({
         { path: 'blockchain', component: load('blockchain-components/MainBlockchain') },
         { path: 'smartcontracts', component: load('blockchain-components/SmartContract') },
         { path: 'money_transaction', component: load('blockchain-components/SendMoney') },
-        { path: 'data_transaction', component: load('blockchain-components/SendData') }
+        { path: 'data_transaction', component: load('blockchain-components/SendData') },
+        { path: 'topology_detector', component: load('NetworkAutoDetection') }
       ],
     },
     { path: '*', component: load('Error404') }

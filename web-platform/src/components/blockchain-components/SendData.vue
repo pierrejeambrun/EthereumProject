@@ -6,7 +6,7 @@
         <q-card-title slot="overlay">
           Call a Smart Contract
           <div slot="right" class="row items-center" style="color: white">
-            <q-icon name="compare_arrows" /> Send Data
+            <q-icon name="code" /> Send Data
           </div>
         </q-card-title>
       </q-card-media>

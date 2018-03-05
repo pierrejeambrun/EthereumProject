@@ -18,6 +18,10 @@
           <q-item-side icon="home" />
           <q-item-main label="Home" sublabel="Go Back to the Home Page"/>
         </q-side-link>
+        <q-side-link item to="/topology_detector">
+          <q-item-side icon="settings system daydream"/>
+          <q-item-main label="Topology Detector" sublabel="Detect your Architecture"/>
+        </q-side-link>
         <q-side-link item to="/network">
           <q-item-side icon="dns" />
           <q-item-main label="Network" sublabel="Visualize Architecture"/>
@@ -27,7 +31,7 @@
           <q-item-main label="Money" sublabel="Send Money to other accounts"/>
         </q-side-link>
         <q-side-link item to="/data_transaction">
-          <q-item-side icon="compare_arrows"/>
+          <q-item-side icon="code"/>
           <q-item-main label="Data" sublabel="Call your smart contracts"/>
         </q-side-link>
         <q-side-link item to="/smartcontracts">
