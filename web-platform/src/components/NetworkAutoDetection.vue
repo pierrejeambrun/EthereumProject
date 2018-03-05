@@ -9,7 +9,7 @@
           Network Detector
         </div>
       </q-toolbar>
-      <div class="layout-padding">
+      <div v-if="!detectionOver" class="layout-padding">
         <p>
           Enter your network mask (/24)
         </p>
@@ -20,6 +20,10 @@
           <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
           <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
         </div>
+      </div>
+      <div v-else class="layout-padding">
+        We successfully detected the network and <br> found {{ nodes.length }} running nodes!
+        The network topology is saved.
       </div>
       <q-progress :percentage="progress" color="primary" stripe animate style="height: 20px"/>
     </q-modal>
@@ -44,8 +48,9 @@
     data: function() {
       return {
         mask: null,
-        numberOfNodes: null,
-        progress: 0
+        nodes: [],
+        progress: 0,
+        detectionOver: false
       }
     },
     mounted: function() {
@@ -60,12 +65,23 @@
         for (let i = 0; i <= 255; i++) {
           let currentIp = baseIp + "." + i;
             httpService.peers(currentIp).then((response) => {
-              this.numberOfNodes += 1;
+              this.nodes.push(response);
               this.progress = this.progress + 1/256 * 100;
+              if (this.progress == 100) {
+                this.detectionOver = true;
+                this.createNetwork();
+              }
             }).catch((error)=> {
               this.progress = this.progress + 1/256 * 100;
+              if (this.progress == 100) {
+                this.detectionOver = true;
+                this.createNetwork();
+              }
             });
         }
+      },
+      createNetwork: function() {
+        console.log(this.nodes);
       }
     }
   }
