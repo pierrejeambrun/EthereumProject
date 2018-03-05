@@ -16,16 +16,19 @@
         <p>
           <q-input v-model="mask" type="text" float-label="NetMask"/>
         </p>
-        <div class="row justify-between"
-        <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
-        <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
+        <div class="row justify-between">
+          <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
+          <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
+        </div>
       </div>
+      <q-progress :percentage="progress" color="primary" stripe animate style="height: 20px"/>
     </q-modal>
   </div>
 </template>
 
 <script type="text/javascript">
-  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QInput } from 'quasar'
+  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QInput, QProgress } from 'quasar'
+  import httpService from '../services/httpService';
 
   export default {
     name: 'presentation',
@@ -35,11 +38,14 @@
       QIcon,
       QToolbarTitle,
       QModal,
-      QInput
+      QInput,
+      QProgress
     },
     data: function() {
       return {
-        mask: null
+        mask: null,
+        numberOfNodes: null,
+        progress: 0
       }
     },
     mounted: function() {
@@ -50,7 +56,16 @@
         this.$router.push('/');
       },
       detectNetworkButton: function() {
-
+        var baseIp = this.mask.split(".").slice(0, -1).join(".");
+        for (let i = 0; i <= 255; i++) {
+          let currentIp = baseIp + "." + i;
+            httpService.peers(currentIp).then((response) => {
+              this.numberOfNodes += 1;
+              this.progress = this.progress + 1/256 * 100;
+            }).catch((error)=> {
+              this.progress = this.progress + 1/256 * 100;
+            });
+        }
       }
     }
   }
