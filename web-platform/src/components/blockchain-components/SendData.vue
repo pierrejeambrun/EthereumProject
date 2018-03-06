@@ -129,6 +129,7 @@
       }
     },
     beforeMount() {
+      web3Service.init(this.$store.state.selectedNode.ip);
       this.createdListAccounts();
     },
     destroyed() {
@@ -136,6 +137,7 @@
       this.ownerEvent = null;
     }
   }
+  // 0x2f7bb9faa7222746c9ba8d1c53d2ce57ad1a505d
   //0x19ab453c000000000000000000000000ba4fde2b368a721995fe3a693789a9a7a4e0f79f
 </script>
 <style lang="stylus">

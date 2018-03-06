@@ -52,9 +52,6 @@
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
   import httpService from "../services/httpService"
 
-
-  var mockGraph = require("../assets/data/blockChainNodes.json");
-
   export default {
     name: "network",
     components: {
@@ -91,8 +88,6 @@
     },
     methods: {
       drawGraph: function() {
-        // Retrieve data for the graph,
-        this.graphData = mockGraph;
         var svg = d3.select("#svg1");
         var width = parseInt(svg.style("width"));
         var height = parseInt(svg.style("height"));

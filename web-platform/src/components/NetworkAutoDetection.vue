@@ -88,24 +88,41 @@
         }
       },
       createNetwork: function() {
+        let idMapping = {};
         let graph = {
           nodes: [],
           links: []
         };
+
+        if (this.nodes.length == 0) {
+          return;
+        }
+
+        // Create Id mapping
+        for (let i = 0; i < this.nodes.length; i++) {
+          let links = this.nodes[i];
+          idMapping[links[0].network.localAddress.split(":")[0]] = i;
+        }
+
+        // Populate nodes and links
         for (let i  = 0; i < this.nodes.length; i++) {
           var links = this.nodes[i];
+          var localAddress = links[0].network.localAddress.split(":")[0];
           graph.nodes.push({
-            id: i,
+            id: idMapping[localAddress],
             group: i,
-            ip: links[0].network.localAddress.split(":")[0]
+            ip: localAddress
           });
+          idMapping[links[0].network.localAddress.split(":")[0]] = i;
           for (let link of links) {
             graph.links.push({
-              source: link.network.localAddress.split(":")[0],
-              target: link.network.remoteAddress.split(":")[0]
+              source: idMapping[link.network.localAddress.split(":")[0]],
+              target: idMapping[link.network.remoteAddress.split(":")[0]]
             });
           }
         }
+
+      // Filter double links
       let filteredGraph = {
         nodes: graph.nodes,
         links: []
@@ -114,8 +131,8 @@
       for (let link of graph.links) {
         var known = false;
         for (let filteredLink of filteredGraph.links) {
-          var ips = [filteredLink.source, filteredLink.target]
-          if (ips.includes(link.source) && ips.includes(link.target)) {
+          var ips = [idMapping[filteredLink.source], idMapping[filteredLink.target]];
+          if (ips.includes(idMapping[link.source]) && ips.includes(idMapping[link.target])) {
             known = true;
             break;
           }
@@ -125,7 +142,8 @@
         }
       }
       this.processing = false;
-      // Write the graph in the file.
+      console.log(filteredGraph);
+      this.$store.commit("setGraph", filteredGraph);
       },
       postProcessResponse: function() {
         if (this.nodes.length > 0) {
