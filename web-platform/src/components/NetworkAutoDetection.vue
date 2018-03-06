@@ -9,7 +9,7 @@
           Network Detector
         </div>
       </q-toolbar>
-      <div v-if="!detectionOver" class="layout-padding">
+      <div v-if="!scanningOver" class="layout-padding">
         <p>
           Enter your network mask (/24)
         </p>
@@ -21,8 +21,8 @@
           <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
         </div>
       </div>
-      <div v-else class="layout-padding" v-html="postProcessResponse()">
-        <p></p>
+      <div v-else class="layout-padding">
+        <p v-html="postProcessResponse()"></p>
         <div class="text-center">
           <q-btn color="red" @click="goBackButton()">Ok</q-btn>
         </div>
@@ -52,8 +52,8 @@
         mask: null,
         nodes: [],
         progress: 0,
-        detectionRunning: false,
-        detectionOver: false
+        processing: false,
+        scanningOver: false
       }
     },
     mounted: function() {
@@ -64,10 +64,10 @@
         this.$router.push('/');
       },
       detectNetworkButton: function() {
-        if (this.detectionRunning) {
+        if (this.processing) {
           return;
         }
-        this.detectionRunning = true;
+        this.processing = true;
         var baseIp = this.mask.split(".").slice(0, -1).join(".");
         for (let i = 0; i <= 255; i++) {
           let currentIp = baseIp + "." + i;
@@ -75,13 +75,13 @@
               this.nodes.push(response.body.result);
               this.progress = this.progress + 1/256 * 100;
               if (this.progress == 100) {
-                this.detectionOver = true;
+                this.scanningOver = true;
                 this.createNetwork();
               }
             }).catch((error)=> {
               this.progress = this.progress + 1/256 * 100;
               if (this.progress == 100) {
-                this.detectionOver = true;
+                this.scanningOver = true;
                 this.createNetwork();
               }
             });
@@ -93,21 +93,39 @@
           links: []
         };
         for (let i  = 0; i < this.nodes.length; i++) {
-          var relations = this.nodes[i];
+          var links = this.nodes[i];
           graph.nodes.push({
             id: i,
             group: i,
-            ip: relations[0].network.localAddress.split(":")[0]
+            ip: links[0].network.localAddress.split(":")[0]
           });
-          for (let relation of relations) {
+          for (let link of links) {
             graph.links.push({
-              source: relation.network.localAddress.split(":")[0],
-              target: relation.network.remoteAddress.split(":")[0]
+              source: link.network.localAddress.split(":")[0],
+              target: link.network.remoteAddress.split(":")[0]
             });
           }
         }
-      console.log(graph);
-      this.detectionRunning = false;
+      let filteredGraph = {
+        nodes: graph.nodes,
+        links: []
+      };
+
+      for (let link of graph.links) {
+        var known = false;
+        for (let filteredLink of filteredGraph.links) {
+          var ips = [filteredLink.source, filteredLink.target]
+          if (ips.includes(link.source) && ips.includes(link.target)) {
+            known = true;
+            break;
+          }
+        }
+        if (!known) {
+          filteredGraph.links.push(link);
+        }
+      }
+      this.processing = false;
+      // Write the graph in the file.
       },
       postProcessResponse: function() {
         if (this.nodes.length > 0) {
