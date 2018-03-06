@@ -21,9 +21,7 @@
           <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
         </div>
       </div>
-      <div v-else class="layout-padding">
-        We successfully detected the network and <br> found {{ nodes.length }} running nodes!
-        The network topology is saved.
+      <div v-else class="layout-padding" v-html="postProcessResponse()">
         <p></p>
         <div class="text-center">
           <q-btn color="red" @click="goBackButton()">Ok</q-btn>
@@ -110,6 +108,14 @@
         }
       console.log(graph);
       this.detectionRunning = false;
+      },
+      postProcessResponse: function() {
+        if (this.nodes.length > 0) {
+          return "We successfully detected the network and found " + this.nodes.length + ` running nodes!  <br>
+        The topology is saved.`
+        } else {
+          return `0 running nodes identified, verify the mask and that <br> your nodes are up!`
+        }
       }
     }
   }
