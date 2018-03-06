@@ -24,7 +24,7 @@
       <div v-else class="layout-padding">
         <p v-html="postProcessResponse()"></p>
         <div class="text-center">
-          <q-btn color="red" @click="goBackButton()">Ok</q-btn>
+          <q-btn color="red" @click="okButton()">Ok</q-btn>
         </div>
       </div>
       <q-progress :percentage="progress" color="primary" stripe animate style="height: 20px"/>
@@ -62,6 +62,9 @@
     methods: {
       goBackButton: function() {
         this.$router.push('/');
+      },
+      okButton: function() {
+        this.$router.push('/network');
       },
       detectNetworkButton: function() {
         if (this.processing) {
@@ -142,7 +145,6 @@
         }
       }
       this.processing = false;
-      console.log(filteredGraph);
       this.$store.commit("setGraph", filteredGraph);
       },
       postProcessResponse: function() {
