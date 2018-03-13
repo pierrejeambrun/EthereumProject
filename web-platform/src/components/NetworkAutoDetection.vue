@@ -9,26 +9,59 @@
           Network Detector
         </div>
       </q-toolbar>
-      <div v-if="!scanningOver" class="layout-padding">
-        <p>
-          Enter your network mask (/24)
-        </p>
-        <p>
-          <q-input v-model="mask" type="text" float-label="NetMask"/>
-        </p>
-        <div class="row justify-between">
-          <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
-          <q-btn color="primary" @click="detectNetworkButton()">Detect</q-btn>
-        </div>
-      </div>
-      <div v-else class="layout-padding">
-        <p v-html="postProcessResponse()"></p>
-        <div class="text-center">
-          <q-btn color="red" @click="okButton()">Ok</q-btn>
-        </div>
-      </div>
+      <q-tabs>
+        <!-- Tabs - notice slot="title" -->
+        <q-tab default slot="title" name="tab-1" label="Static Discovery" />
+        <q-tab slot="title" name="tab-2" label="Dynamic Discovery" />
+        <!-- Targets -->
+
+        <!-- Tab 1 -->
+        <q-tab-pane name="tab-1">
+          <div v-if="!scanningOver" class="layout-padding">
+            <p>
+              <b>Enter your Network Mask (/24)</b>
+            </p>
+            <p>
+              <q-input v-model="mask" type="text" float-label="NetMask"/>
+            </p>
+            <div class="row justify-between">
+              <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
+              <q-btn color="primary" @click="staticDetectNetworkButton()">Detect</q-btn>
+            </div>
+          </div>
+          <div v-else class="layout-padding">
+            <p v-html="postProcessResponse()"></p>
+            <div class="text-center">
+              <q-btn color="red" @click="okButton()">Ok</q-btn>
+            </div>
+          </div>
+        </q-tab-pane>
+
+        <!-- Tab 2 -->
+        <q-tab-pane name="tab-2">
+          <div v-if="!scanningOver" class="layout-padding">
+            <p>
+              <b>Enter the IP of one Node!</b>
+            </p>
+            <p>
+              <q-input v-model="mask" type="text" float-label="NetMask"/>
+            </p>
+            <div class="row justify-between">
+              <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
+              <q-btn color="primary" @click="dynamicDetectNetworkButton()">Detect</q-btn>
+            </div>
+          </div>
+          <div v-else class="layout-padding">
+            <p v-html="postProcessResponse()"></p>
+            <div class="text-center">
+              <q-btn color="red" @click="okButton()">Ok</q-btn>
+            </div>
+          </div>
+        </q-tab-pane>
+      </q-tabs>
+
       <q-progress :percentage="progress" color="primary" stripe animate style="height: 20px"/>
-    </q-modal>
+      </q-modal>
   </div>
 </template>
 
