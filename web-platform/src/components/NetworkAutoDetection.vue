@@ -66,7 +66,7 @@
 </template>
 
 <script type="text/javascript">
-  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QInput, QProgress } from 'quasar'
+  import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QInput, QProgress, QTabs, QTabPane, QTab } from 'quasar'
   import httpService from '../services/httpService';
 
   export default {
@@ -78,7 +78,10 @@
       QToolbarTitle,
       QModal,
       QInput,
-      QProgress
+      QProgress,
+      QTabs,
+      QTabPane,
+      QTab
     },
     data: function() {
       return {
@@ -99,7 +102,7 @@
       okButton: function() {
         this.$router.push('/network');
       },
-      detectNetworkButton: function() {
+      staticDetectNetworkButton: function() {
         if (this.processing) {
           return;
         }
@@ -122,6 +125,16 @@
               }
             });
         }
+      },
+      dynamicDetectNetworkButton: function() {
+        if (this.processing) {
+          return;
+        }
+        console.log("Dynamic!");
+        this.processing = true;
+        this.scanningOver = true;
+        this.createNetwork();
+
       },
       createNetwork: function() {
         let idMapping = {};
