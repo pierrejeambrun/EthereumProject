@@ -22,7 +22,7 @@
               <b>Enter your Network Mask (/24)</b>
             </p>
             <p>
-              <q-input v-model="mask" type="text" float-label="NetMask"/>
+              <q-input v-model="address" type="text" float-label="NetMask"/>
             </p>
             <div class="row justify-between">
               <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
@@ -44,7 +44,7 @@
               <b>Enter the IP of one Node!</b>
             </p>
             <p>
-              <q-input v-model="mask" type="text" float-label="NetMask"/>
+              <q-input v-model="address" type="text" float-label="NetMask"/>
             </p>
             <div class="row justify-between">
               <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
@@ -67,7 +67,8 @@
 
 <script type="text/javascript">
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QInput, QProgress, QTabs, QTabPane, QTab } from 'quasar'
-  import httpService from '../services/httpService';
+  import httpService from '../services/httpService'
+  import * as helper from '../structures/helper'
 
   export default {
     name: 'presentation',
@@ -85,7 +86,7 @@
     },
     data: function() {
       return {
-        mask: null,
+        address: null,
         nodes: [],
         progress: 0,
         processing: false,
@@ -107,7 +108,7 @@
           return;
         }
         this.processing = true;
-        var baseIp = this.mask.split(".").slice(0, -1).join(".");
+        var baseIp = this.address.split(".").slice(0, -1).join(".");
         for (let i = 0; i <= 255; i++) {
           let currentIp = baseIp + "." + i;
             httpService.peers(currentIp).then((response) => {
@@ -130,11 +131,43 @@
         if (this.processing) {
           return;
         }
-        console.log("Dynamic!");
         this.processing = true;
-        this.scanningOver = true;
-        this.createNetwork();
+        var knownIp = new Set([this.address]);
+        var exploredIp = new Set();
 
+        var functionRecursiveExploration = () => {
+          for (let ip of knownIp) {
+            if (exploredIp.has(ip)) {
+              continue;
+            }
+            exploredIp.add(ip);
+            httpService.peers(ip).then((response) => {
+                  this.nodes.push(response.body.result);
+                  for (let _ of response.body.result) {
+                    knownIp.add(_.network.remoteAddress.split(":")[0]);
+                  }
+                  console.log(100 * exploredIp.size / knownIp.size);
+                  this.progress = 100 * exploredIp.size / knownIp.size;
+                  if (!helper.setEquals(knownIp, exploredIp)) {
+                    functionRecursiveExploration();
+                  } else {
+                      this.progress == 100
+                      this.scanningOver = true;
+                      this.createNetwork();
+                  }
+                }).catch((error)=> {
+                  console.log("One node didn't respond!!!!!");
+                  console.log(ip);
+                  console.log(error);
+                  if (helper.setEquals(knownIp, exploredIp)) {
+                    this.scanningOver = true;
+                    this.createNetwork();
+                  }
+                });
+          }
+        }
+
+        functionRecursiveExploration();
       },
       createNetwork: function() {
         let idMapping = {};
@@ -144,6 +177,7 @@
         };
 
         if (this.nodes.length == 0) {
+          this.processing = false;
           return;
         }
 
@@ -198,7 +232,7 @@
           return "We successfully detected the network and found " + this.nodes.length + ` running nodes!  <br>
         The topology is saved.`
         } else {
-          return `0 running nodes identified, verify the mask and that <br> your nodes are up!`
+          return `0 running nodes identified, verify the address and that <br> your nodes are up!`
         }
       }
     }
