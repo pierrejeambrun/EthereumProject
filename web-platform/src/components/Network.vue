@@ -48,7 +48,6 @@
 
 <script type="text/javascript">
   import * as d3 from "d3"
-  import { Node } from "structures/Nodes"
   import { QModal, QBtn, QToolbar, QIcon, QToolbarTitle, QList, QCollapsible } from "quasar"
   import httpService from "../services/httpService"
 
