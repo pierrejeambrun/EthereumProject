@@ -156,9 +156,7 @@
                       this.createNetwork();
                   }
                 }).catch((error)=> {
-                  console.log("One node didn't respond!!!!!");
-                  console.log(ip);
-                  console.log(error);
+                  console.log("One node didn't respond!!!!! Strange");
                   if (helper.setEquals(knownIp, exploredIp)) {
                     this.scanningOver = true;
                     this.createNetwork();
