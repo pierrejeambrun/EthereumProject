@@ -5,11 +5,11 @@
         Node {{ node.ip }}
       </q-toolbar-title>
     </q-toolbar>
-    <div class="fixed-center" style="width: 70%">
-      <div v-if="blocks != null">
-        <svg class="svgBC bg-primary" id="svgBC" height="600">
+    <div class="fixed-center" style="width: 70%; height:100%">
+      <div v-if="blocks != null" style="height: 100%">
+        <svg class="svgBC bg-primary" id="svgBC" height="75%" style="margin-top: 10%">
         </svg>
-        <div class="row justify-between" style="max-width: 45%; margin-left: 25%">
+        <div class="row justify-between" style="max-width: 45%; margin-left: 25%;">
           <q-btn v-if="delimiterBlocksId.tail != 0" color="primary" @click="previousButtonHandler()" big>
             <q-icon name="keyboard_arrow_left" />
             Previous Blocks

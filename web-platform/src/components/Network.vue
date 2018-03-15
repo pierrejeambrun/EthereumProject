@@ -5,7 +5,7 @@
         Network Visualization
       </q-toolbar-title>
     </q-toolbar>
-    <svg class="svg bg-primary fixed-center" id="svg1" height="600">
+    <svg class="svg bg-primary fixed-center" id="svg1" height="70%">
     </svg>
     <q-modal ref="layoutModal" v-model="open" size="fixed" @open="fixeWitdh" minimized>
       <q-toolbar>
