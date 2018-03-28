@@ -19,10 +19,10 @@
         <q-tab-pane name="tab-1">
           <div v-if="!scanningOver" class="layout-padding">
             <p>
-              <b>Enter your Network Mask (/24)</b>
+              <b>Enter your network address! (/24)</b>
             </p>
             <p>
-              <q-input v-model="address" type="text" float-label="NetMask"/>
+              <q-input v-model="address" type="text" float-label="Network Address"/>
             </p>
             <div class="row justify-between">
               <q-btn color="red" @click="goBackButton()">Go Back</q-btn>
@@ -41,10 +41,10 @@
         <q-tab-pane name="tab-2">
           <div v-if="!scanningOver" class="layout-padding">
             <p>
-              <b>Enter the IP of one Node!</b>
+              <b>Enter a node address!</b>
             </p>
             <p>
-              <q-input v-model="address" type="text" float-label="NetMask"/>
+              <q-input v-model="address" type="text" float-label="Node Address"/>
             </p>
             <div class="row justify-between">
               <q-btn color="red" @click="goBackButton()">Go Back</q-btn>

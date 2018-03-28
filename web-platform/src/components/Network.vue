@@ -135,7 +135,7 @@
           .append("text")
           .text(function(d) { return d.ip ;})
           .style("text-anchor", "middle")
-          .style("fill", "#000000")
+          .style("fill", "white")
           .style("font-family", "Arial")
           .style("font-size", 13);
 
