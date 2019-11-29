@@ -1,6 +1,6 @@
 # README
 
-POC to showcase the HackParity Vulnerability in the ethereum blockchain
+POC to showcase the HackParity Vulnerability in the ethereum blockchain. You can find more information about the attack in the `documentation.pdf` presentation
 
 ### I Prerequisite
 If your node is supposed to be mining, you need to have at least 4GB of RAM of the local machine running your node
