@@ -1,5 +1,7 @@
 # README
 
+POC to showcase the HackParity Vulnerability in the ethereum blockchain
+
 ### I Prerequisite
 If your node is supposed to be mining, you need to have at least 4GB of RAM of the local machine running your node
 
